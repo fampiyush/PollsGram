@@ -40,4 +40,24 @@ public class PollController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create poll.");
         }
     }
+
+    @PatchMapping("/update/question/{id}")
+    public ResponseEntity<String> updatePoll(@PathVariable Long id, @RequestBody String question) {
+        boolean isUpdated = pollService.updatePollQuestion(id, question);
+        if (isUpdated) {
+            return ResponseEntity.status(HttpStatus.OK).body("Poll updated successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update poll.");
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deletePoll(@PathVariable Long id) {
+        boolean isDeleted = pollService.deletePoll(id);
+        if (isDeleted) {
+            return ResponseEntity.status(HttpStatus.OK).body("Poll deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to delete poll.");
+        }
+    }
 }

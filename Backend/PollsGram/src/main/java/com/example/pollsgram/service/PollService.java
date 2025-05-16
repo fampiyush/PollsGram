@@ -71,6 +71,37 @@ public class PollService {
         }
     }
 
+    @Transactional
+    public Boolean updatePollQuestion(Long id, String question) {
+        Poll poll = pollRepository.findById(id).orElse(null);
+        if (poll == null) {
+            return false;
+        }
+        poll.setQuestion(question);
+        try {
+            pollRepository.save(poll);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error updating poll: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Transactional
+    public Boolean deletePoll(Long id) {
+        Poll poll = pollRepository.findById(id).orElse(null);
+        if (poll == null) {
+            return false;
+        }
+        try {
+            pollRepository.delete(poll);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error deleting poll: " + e.getMessage());
+            return false;
+        }
+    }
+
     private void optionToOptionDTO(Option option, OptionDTO optionDTO) {
         optionDTO.setId(option.getId());
         optionDTO.setOptionText(option.getOptionText());

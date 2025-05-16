@@ -7,7 +7,6 @@ public class OptionDTO {
     private Long id;
     private String optionText;
     private int votesCount;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long pollId;
 
     public void setId(Long id) {
