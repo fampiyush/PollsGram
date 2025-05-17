@@ -1,0 +1,112 @@
+:root {
+  --bg-color: #232946;
+  --text-color: #f4faff;
+  --header-bg: linear-gradient(0deg, #232946 40%, #393e46 100%);
+  --polls-bg: linear-gradient(135deg, #2a2d3a 0%, #393e46 100%);
+  --shadow: 0 4px 16px rgba(0,0,0,0.25);
+
+  --menu-bg: #393e46;
+  --menu-text: #f4faff;
+  --menu-hover-bg: linear-gradient(135deg, #8a5db7 0%, #ef6a8e 100%);
+  --menu-hover-text: #ffe9c7;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--header-bg);
+  color: var(--text-color);
+  padding: 8px 5px;
+  box-shadow: var(--shadow);
+  transition: background 0.3s, box-shadow 0.3s;
+  margin: 0 auto;
+}
+
+.header-side {
+  flex: 1;
+}
+
+#header-title {
+  flex: 0 1 auto;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+
+#header-menu-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
+  padding: 10px 15px;
+  gap: 12px;
+}
+
+.header-menu-btn {
+  background: var(--menu-bg);
+  color: var(--menu-text);
+  border: none;
+  border-radius: 6px;
+  padding: 7px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.header-menu-btn:hover {
+  background: var(--menu-hover-bg);
+  color: var(--menu-hover-text);
+  box-shadow: 0 4px 16px rgba(44,62,80,0.16);
+}
+
+/* Remove old list styles */
+#header-menu {
+  display: none;
+}
+
+#polls-view {
+  flex: 1;
+  background: var(--polls-bg);
+  margin: 0 auto 0 auto;
+  box-shadow: var(--shadow);
+  border-radius: 0 0 18px 18px; /* Only bottom corners rounded */
+  overflow-y: auto;
+  min-height: 80vh;
+  padding: 32px 24px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.polls-grid {
+  margin: 0 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+  gap: 24px;
+}
+
+.poll-card {
+  background: linear-gradient(135deg, #8a5db7 0%, #ef6a8e 100%);
+  color: #f4faff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  padding: 20px;
+  min-width: 0;      /* Allow shrinking */
+}
