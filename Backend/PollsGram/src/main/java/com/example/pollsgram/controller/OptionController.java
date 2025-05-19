@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/options")
+@CrossOrigin(origins = "*")
 public class OptionController {
 
     private final OptionService optionService;

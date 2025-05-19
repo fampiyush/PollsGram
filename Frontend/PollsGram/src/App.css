@@ -110,3 +110,27 @@ body {
   padding: 20px;
   min-width: 0;      /* Allow shrinking */
 }
+
+.poll-card > p {
+  margin: 0;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+.poll-card-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.poll-card-option {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background: var(--bg-color);
+  color: #f4faff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s, color 0.2s;
+}
