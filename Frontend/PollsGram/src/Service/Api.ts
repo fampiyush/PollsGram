@@ -6,6 +6,7 @@ const GET_POLLS_PAGE = '/polls/page/'; // required /pageNumber
 // POST
 const POST_POLL = '/polls/create/';
 const POST_OPTION = '/options/create/';
+const POST_GOOGLE_AUTH = '/auth/google'; 
 
 // PATCH
 const PATCH_POLL_QUESTION = '/polls/update/question/'; // required /pollsId
@@ -119,6 +120,22 @@ export const deleteOption = async (optionId: number) => {
     });
     if (!response.ok) {
         throw new Error('Failed to delete option');
+    }
+    const data = await response.json();
+    return data;
+}
+
+export const googleAuth = async (credential: string) => {
+    const url = `${import.meta.env.VITE_BASE_API_URL}${POST_GOOGLE_AUTH}`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ credential }),
+    });
+    if (!response.ok) {
+        throw new Error('Failed to authenticate with Google');
     }
     const data = await response.json();
     return data;

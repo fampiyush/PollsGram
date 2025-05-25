@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/polls")
-@CrossOrigin(origins = "*")
 public class PollController {
 
     private final PollService pollService;
