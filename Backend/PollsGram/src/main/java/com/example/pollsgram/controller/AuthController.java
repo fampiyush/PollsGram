@@ -17,12 +17,14 @@ public class AuthController {
         this.googleService = googleService;
     }
 
+    // TODO: get refresh token first and then create access token with it
     @PostMapping("/google")
     public ResponseEntity<Map<String, String>> googleLogin(@RequestBody Map<Object, String> credential) {
         String token = googleService.verifyGoogleToken(credential.get("credential"));
         if (token == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid token"));
         }
+
         return ResponseEntity.ok(Map.of("token", token));
     }
 }

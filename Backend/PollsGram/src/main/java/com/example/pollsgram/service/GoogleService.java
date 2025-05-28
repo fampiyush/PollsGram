@@ -1,5 +1,7 @@
 package com.example.pollsgram.service;
 
+import com.example.pollsgram.model.RefreshToken;
+import com.example.pollsgram.model.User;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import io.jsonwebtoken.Jwts;
@@ -18,10 +20,14 @@ import java.util.Map;
 public class GoogleService {
 
     private final GoogleIdTokenVerifier googleIdTokenVerifier;
+    private final RefreshService refreshService;
+    private final UserService userService;
     private static final Dotenv dotenv = Dotenv.load();
 
-    public GoogleService(GoogleIdTokenVerifier googleIdTokenVerifier) {
+    public GoogleService(GoogleIdTokenVerifier googleIdTokenVerifier, RefreshService refreshService, UserService userService) {
         this.googleIdTokenVerifier = googleIdTokenVerifier;
+        this.refreshService = refreshService;
+        this.userService = userService;
     }
 
     public String verifyGoogleToken(String idToken) {
@@ -35,6 +41,17 @@ public class GoogleService {
             GoogleIdToken.Payload payload = token.getPayload();
             String userId = payload.getSubject(); // Use this value as user ID
             String email = payload.getEmail(); // Use this value as user email
+
+            // If user not found then create a new user
+            User user = userService.findUserByEmail(email)
+                    .orElseGet(() -> userService.createUser(email));
+
+            if(user == null) {
+                return null; // User creation failed
+            }
+
+            // Create a refresh token for the user
+            RefreshToken refreshToken = refreshService.createRefreshToken(user);
 
             // Create a key for signing
             String secret = dotenv.get("JWT_SECRET");
