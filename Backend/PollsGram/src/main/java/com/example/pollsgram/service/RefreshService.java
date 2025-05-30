@@ -36,4 +36,9 @@ public class RefreshService {
                 })
                 .orElse(false);
     }
+
+    public RefreshToken findByUser(User user) {
+        return refreshRepository.findById(user.getId())
+                .orElse(null);
+    }
 }

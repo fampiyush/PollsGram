@@ -30,7 +30,7 @@ public class GoogleService {
         this.userService = userService;
     }
 
-    public String verifyGoogleToken(String idToken) {
+    public Map<String, String> verifyGoogleToken(String idToken) {
         GoogleIdToken token = null;
         try {
             token = googleIdTokenVerifier.verify(idToken);
@@ -52,15 +52,33 @@ public class GoogleService {
 
             // Create a refresh token for the user
             RefreshToken refreshToken = refreshService.createRefreshToken(user);
+            if (refreshToken == null) {
+                return null; // Refresh token creation failed
+            }
+            String accessToken = getAccessToken(refreshToken.getToken(), user);
+            if (accessToken == null) {
+                return null; // Access token creation failed
+            }
+            Map<String, String> returnMap = new HashMap<>();
+            returnMap.put("refreshToken", refreshToken.getToken());
+            returnMap.put("accessToken", accessToken);
+            return returnMap;
+        } else {
+            return null;
+        }
+    }
 
+    public String getAccessToken(String refreshToken, User user) {
+        RefreshToken token = refreshService.findByUser(user);
+        if (token != null && refreshService.isValidToken(token)) {
             // Create a key for signing
             String secret = dotenv.get("JWT_SECRET");
             Key key = Keys.hmacShaKeyFor(secret.getBytes());
 
             // Set claims
             Map<String, Object> claims = new HashMap<>();
-            claims.put("sub", userId);
-            claims.put("email", email);
+            claims.put("id", user.getId());
+            claims.put("email", user.getEmail());
             claims.put("iat", new Date());
             claims.put("exp", new Date(System.currentTimeMillis() + 15 * 60 * 1000)); // 15 minutes expiration
 
@@ -71,8 +89,7 @@ public class GoogleService {
                     .compact();
 
             return jwt;
-        } else {
-            return null;
         }
+        return null; // Invalid or expired refresh token
     }
 }
