@@ -7,10 +7,13 @@ import java.util.Date;
 @Entity
 @Table(name = "refresh_tokens")
 public class RefreshToken {
+    @Id
+    private Long userId;
+
     private String token;
 
-    @Id
     @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

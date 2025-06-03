@@ -4,6 +4,7 @@ import com.example.pollsgram.model.User;
 import com.example.pollsgram.service.GoogleService;
 import com.example.pollsgram.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,18 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid token"));
         }
 
-        return ResponseEntity.ok(tokens);
+        // Create HttpOnly cookie for the refresh token
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", tokens.get("refreshToken"))
+                .httpOnly(true)
+                .secure(true) // Use secure cookies in production
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60) // 7 days
+                .build();
+
+        // Add the cookie to the response header
+        return ResponseEntity.ok()
+                .header("Set-Cookie", refreshTokenCookie.toString())
+                .body(Map.of("accessToken", tokens.get("accessToken")));
     }
 
     @GetMapping("/access-token")
