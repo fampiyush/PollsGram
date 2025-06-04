@@ -14,12 +14,17 @@ public class RefreshService {
     }
 
     public RefreshToken createRefreshToken(User user) {
+        // Check if a refresh token already exists for the user
+        RefreshToken existingToken = refreshRepository.findById(user.getId()).orElse(null);
+        if (existingToken != null) {
+            refreshRepository.delete(existingToken); // Delete the existing token
+        }
+
+        // Create a new refresh token
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
-        // Generate a unique token, e.g., using UUID
-        refreshToken.setToken(java.util.UUID.randomUUID().toString());
-        // Set the creation date
-        refreshToken.setCreatedAt(new java.util.Date());
+        refreshToken.setToken(java.util.UUID.randomUUID().toString()); // Generate a unique token
+        refreshToken.setCreatedAt(new java.util.Date()); // Set the creation date
         return refreshRepository.save(refreshToken);
     }
 

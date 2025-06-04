@@ -16,11 +16,12 @@ const PATCH_OPTION_TEXT = '/options/update/';
 const DELETE_POLL = '/polls/delete/'; // required /pollId
 const DELETE_OPTION = '/options/delete/'; // required /optionId
 
-export const getPollsByPage = async (page: number) => {
+export const getPollsByPage = async (page: number, accessToken: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${GET_POLLS_PAGE}${page}`;
     const response = await fetch(url, {
         method: 'GET',
         headers: {
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
         },
     });
@@ -31,11 +32,12 @@ export const getPollsByPage = async (page: number) => {
     return data;
 }
 
-export const createPoll = async (poll: Poll) => {
+export const createPoll = async (poll: Poll, accessToken: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${POST_POLL}`;
     const response = await fetch(url, {
         method: 'POST',
         headers: {
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(poll),
@@ -47,11 +49,12 @@ export const createPoll = async (poll: Poll) => {
     return data;
 }
 
-export const createOption = async (option: Option) => {
+export const createOption = async (option: Option, accessToken: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${POST_OPTION}`;
     const response = await fetch(url, {
         method: 'POST',
         headers: {
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(option),
@@ -63,11 +66,12 @@ export const createOption = async (option: Option) => {
     return data;
 }
 
-export const updatePollQuestion = async (pollId: number, question: string) => {
+export const updatePollQuestion = async (pollId: number, question: string, accessToken: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${PATCH_POLL_QUESTION}${pollId}`;
     const response = await fetch(url, {
         method: 'PATCH',
         headers: {
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ question }),
@@ -79,11 +83,12 @@ export const updatePollQuestion = async (pollId: number, question: string) => {
     return data;
 }
 
-export const updateOptionText = async (optionId: number, text: string) => {
+export const updateOptionText = async (optionId: number, text: string, accessToken: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${PATCH_OPTION_TEXT}${optionId}`;
     const response = await fetch(url, {
         method: 'PATCH',
         headers: {
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ text }),
@@ -95,11 +100,12 @@ export const updateOptionText = async (optionId: number, text: string) => {
     return data;
 }
 
-export const deletePoll = async (pollId: number) => {
+export const deletePoll = async (pollId: number, accessToken: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${DELETE_POLL}${pollId}`;
     const response = await fetch(url, {
         method: 'DELETE',
         headers: {
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
         },
     });
@@ -110,11 +116,12 @@ export const deletePoll = async (pollId: number) => {
     return data;
 }
 
-export const deleteOption = async (optionId: number) => {
+export const deleteOption = async (optionId: number, accessToken: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${DELETE_OPTION}${optionId}`;
     const response = await fetch(url, {
         method: 'DELETE',
         headers: {
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
         },
     });

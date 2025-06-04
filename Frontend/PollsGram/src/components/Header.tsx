@@ -1,12 +1,21 @@
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { googleAuth } from '../Service/Api';
+import { useContext } from 'react';
+import PollsContext from '../Service/PollsContext.tsx';
 
 const Header = () => {
+
+  const { setAccessToken } = useContext(PollsContext);
 
   const handleLoginSuccess = (credentialResponse: CredentialResponse) => {
     googleAuth(credentialResponse.credential || '')
       .then((response) => {
-        console.log('Login successful:', response);
+        if (response.accessToken) {
+          const accessToken = response.accessToken;
+          setAccessToken(accessToken);
+        } else {
+          console.error('Login failed');
+        }
       })
       .catch((error) => {
         console.error('Login failed:', error);

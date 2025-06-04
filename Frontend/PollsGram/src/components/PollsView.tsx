@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { getPollsByPage } from '../Service/Api';
+import PollsContext from '../Service/PollsContext.tsx';
 import type { Poll } from '../Types';
 import PollCard from './PollCard'
 
@@ -7,10 +8,16 @@ const PollsView = () => {
   const [page, setPage] = useState(0);
   const [polls, setPolls] = useState({});
 
+  const { accessToken } = useContext(PollsContext);
+
   useEffect(() => {
     const fetchPolls = async () => {
       try {
-        const data = await getPollsByPage(page);
+        if (!accessToken) {
+          console.error('Access token is not available');
+          return;
+        }
+        const data = await getPollsByPage(page, accessToken);
         setPolls(data);
       } catch (error) {
         console.error('Error fetching polls:', error);
@@ -18,7 +25,7 @@ const PollsView = () => {
     }
 
     fetchPolls();
-  },[page]);
+  },[page, accessToken]);
 
   return (
     <div id='polls-view'>
