@@ -14,7 +14,6 @@ const PollsView = () => {
     const fetchPolls = async () => {
       try {
         if (!accessToken) {
-          console.error('Access token is not available');
           return;
         }
         const data = await getPollsByPage(page, accessToken);

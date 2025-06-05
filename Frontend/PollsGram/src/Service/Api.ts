@@ -2,6 +2,7 @@ import type { Poll, Option } from '../Types';
 
 // GET
 const GET_POLLS_PAGE = '/polls/page/'; // required /pageNumber
+const GET_ACCESS_TOKEN = '/auth/access-token'; // required userId as query parameter
 
 // POST
 const POST_POLL = '/polls/create/';
@@ -143,6 +144,21 @@ export const googleAuth = async (credential: string) => {
     });
     if (!response.ok) {
         throw new Error('Failed to authenticate with Google');
+    }
+    const data = await response.json();
+    return data;
+}
+
+export const getAccessToken = async (userId: number) => {
+    const url = `${import.meta.env.VITE_BASE_API_URL}${GET_ACCESS_TOKEN}?userId=${userId}`;
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to fetch access token');
     }
     const data = await response.json();
     return data;

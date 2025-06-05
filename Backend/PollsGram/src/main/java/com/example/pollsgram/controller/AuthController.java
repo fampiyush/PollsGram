@@ -44,7 +44,7 @@ public class AuthController {
     }
 
     @GetMapping("/access-token")
-    public ResponseEntity<Map<String, String>> getAccessToken(@RequestParam String refreshToken, @RequestParam Long userId) {
+    public ResponseEntity<Map<String, String>> getAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken, @RequestParam Long userId) {
         if (refreshToken == null || userId == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Refresh token and user ID are required"));
         }
