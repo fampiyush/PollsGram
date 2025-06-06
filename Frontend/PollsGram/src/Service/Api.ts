@@ -137,6 +137,7 @@ export const googleAuth = async (credential: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${POST_GOOGLE_AUTH}`;
     const response = await fetch(url, {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -153,12 +154,13 @@ export const getAccessToken = async (userId: number) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${GET_ACCESS_TOKEN}?userId=${userId}`;
     const response = await fetch(url, {
         method: 'GET',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
     });
     if (!response.ok) {
-        throw new Error('Failed to fetch access token');
+        throw new Error('Failed to fetch access token: ' + response.statusText);
     }
     const data = await response.json();
     return data;

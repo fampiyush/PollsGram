@@ -2,28 +2,25 @@ import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { googleAuth, getAccessToken } from '../Service/Api';
 import { useContext, useEffect } from 'react';
 import PollsContext from '../Service/PollsContext.tsx';
+import { jwtDecode } from 'jwt-decode';
+import type { JwtPayload } from '../Types.ts';
 
 const Header = () => {
 
-  const { setAccessToken, user } = useContext(PollsContext);
+  const { setAccessToken, user, setUser } = useContext(PollsContext);
 
-  useEffect(() => {
-    // Check for refresh token and ask for access token if it exists
-    const refreshToken = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('refreshToken='))
-      ?.split('=')[1];
-
-      const userId = user.id;
-
-    if (refreshToken && userId) {
+  useEffect(() => { 
+    const userId = localStorage.getItem('userId');
+    console.log('document.cookie:', document.cookie);
+    if (userId) {
       // If refresh token exists, request a new access token
       try {
-        getAccessToken(userId)
+        getAccessToken(Number(userId))
           .then((response) => {
             if (response.accessToken) {
               const accessToken = response.accessToken;
               setAccessToken(accessToken);
+              setInfo(accessToken);
             } else {
               console.error('Failed to retrieve access token');
             }
@@ -43,6 +40,7 @@ const Header = () => {
         if (response.accessToken) {
           const accessToken = response.accessToken;
           setAccessToken(accessToken);
+          setInfo(accessToken);
         } else {
           console.error('Login failed');
         }
@@ -50,6 +48,14 @@ const Header = () => {
       .catch((error) => {
         console.error('Login failed:', error);
       });
+  }
+
+  const setInfo = (accessToken: string) => {
+    // get userid from access token
+    const decodedToken = jwtDecode<JwtPayload>(accessToken);
+    localStorage.setItem('userId', decodedToken.id.toString());
+    // set user id in context
+    setUser({ id: decodedToken.id, email: user.email });
   }
 
   return (

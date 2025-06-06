@@ -10,3 +10,10 @@ export type Option = {
   votesCount: number;
   pollId: number;
 }
+
+export type JwtPayload = {
+  id: number;
+  email: string;
+  iat: number; // issued at time
+  exp: number; // expiration time
+}

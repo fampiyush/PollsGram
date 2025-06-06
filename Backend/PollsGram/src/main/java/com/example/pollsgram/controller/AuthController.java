@@ -32,9 +32,10 @@ public class AuthController {
         // Create HttpOnly cookie for the refresh token
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", tokens.get("refreshToken"))
                 .httpOnly(true)
-                .secure(true) // Use secure cookies in production
-                .path("/")
+                .secure(false) // change it to true for prod
+                .path("/") // change it later
                 .maxAge(7 * 24 * 60 * 60) // 7 days
+                .sameSite("None")
                 .build();
 
         // Add the cookie to the response header
@@ -44,7 +45,8 @@ public class AuthController {
     }
 
     @GetMapping("/access-token")
-    public ResponseEntity<Map<String, String>> getAccessToken(@CookieValue(value = "refreshToken", required = false) String refreshToken, @RequestParam Long userId) {
+    public ResponseEntity<Map<String, String>> getAccessToken(@CookieValue(value = "refreshToken") String refreshToken, @RequestParam Long userId) {
+        System.out.println("Received refresh token: " + refreshToken + ", userId: " + userId);
         if (refreshToken == null || userId == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Refresh token and user ID are required"));
         }
