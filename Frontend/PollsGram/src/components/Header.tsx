@@ -11,7 +11,6 @@ const Header = () => {
 
   useEffect(() => { 
     const userId = localStorage.getItem('userId');
-    console.log('document.cookie:', document.cookie);
     if (userId) {
       // If refresh token exists, request a new access token
       try {

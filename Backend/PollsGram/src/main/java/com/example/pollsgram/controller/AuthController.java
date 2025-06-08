@@ -35,7 +35,7 @@ public class AuthController {
                 .secure(false) // change it to true for prod
                 .path("/") // change it later
                 .maxAge(7 * 24 * 60 * 60) // 7 days
-                .sameSite("None")
+                .sameSite("Lax")
                 .build();
 
         // Add the cookie to the response header
@@ -46,7 +46,6 @@ public class AuthController {
 
     @GetMapping("/access-token")
     public ResponseEntity<Map<String, String>> getAccessToken(@CookieValue(value = "refreshToken") String refreshToken, @RequestParam Long userId) {
-        System.out.println("Received refresh token: " + refreshToken + ", userId: " + userId);
         if (refreshToken == null || userId == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Refresh token and user ID are required"));
         }
