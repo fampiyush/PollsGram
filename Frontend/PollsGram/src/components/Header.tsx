@@ -7,7 +7,7 @@ import type { JwtPayload } from '../Types.ts';
 
 const Header = () => {
 
-  const { setAccessToken, user, setUser, accessToken } = useContext(PollsContext);
+  const { setAccessToken, user, setUser, accessToken, createModalIsOpen, setCreateModalIsOpen } = useContext(PollsContext);
 
   useEffect(() => { 
     const userId = localStorage.getItem('userId');
@@ -63,6 +63,9 @@ const Header = () => {
       <h1 id='header-title'>PollsGram</h1>
       <div id='header-menu-container'>
         <button className="header-menu-btn">Home</button>
+        <button className="header-menu-btn" onClick={() => setCreateModalIsOpen(!createModalIsOpen)}>
+          Create
+        </button>
 
         {
           !accessToken ? (

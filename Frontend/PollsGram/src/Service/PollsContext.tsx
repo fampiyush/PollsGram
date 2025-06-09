@@ -15,6 +15,11 @@ interface UserContextType {
     setUser: (user: UserType) => void;
 }
 
+interface ModalContextType {
+    createModalIsOpen: boolean;
+    setCreateModalIsOpen: (isOpen: boolean) => void;
+}
+
 const defaultAccessToken: AccessTokenType = {
   accessToken: null,
   setAccessToken: () => {},
@@ -28,11 +33,17 @@ const defaultUser: UserContextType = {
     setUser: () => {},
 };
 
-interface PollsContextType extends AccessTokenType, UserContextType {}
+const defaultModal: ModalContextType = {
+    createModalIsOpen: false,
+    setCreateModalIsOpen: () => {},
+};
+
+interface PollsContextType extends AccessTokenType, UserContextType, ModalContextType {}
 
 const defaultValue: PollsContextType = {
     ...defaultAccessToken,
-    ...defaultUser
+    ...defaultUser,
+    ...defaultModal,
 };
 
 const PollsContext = createContext<PollsContextType>(defaultValue);
@@ -43,9 +54,10 @@ export const PollsContextProvider = ({ children }: { children: React.ReactNode }
         id: null,
         email: null,
     });
+    const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
 
     return (
-        <PollsContext.Provider value={{ accessToken, setAccessToken, user, setUser }}>
+        <PollsContext.Provider value={{ accessToken, setAccessToken, user, setUser, createModalIsOpen, setCreateModalIsOpen }}>
             {children}
         </PollsContext.Provider>
     );
