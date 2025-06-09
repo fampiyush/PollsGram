@@ -3,6 +3,7 @@ package com.example.pollsgram.controller;
 import com.example.pollsgram.model.User;
 import com.example.pollsgram.service.GoogleService;
 import com.example.pollsgram.service.UserService;
+import com.google.api.client.util.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ public class AuthController {
 
     private final GoogleService googleService;
     private final UserService userService;
+    @Value("${overHttps}")
+    private boolean overHttps;
 
     public AuthController(GoogleService googleService, UserService userService) {
         this.googleService = googleService;
@@ -32,7 +35,7 @@ public class AuthController {
         // Create HttpOnly cookie for the refresh token
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", tokens.get("refreshToken"))
                 .httpOnly(true)
-                .secure(false) // change it to true for prod
+                .secure(overHttps)
                 .path("/") // change it later
                 .maxAge(7 * 24 * 60 * 60) // 7 days
                 .sameSite("Lax")
