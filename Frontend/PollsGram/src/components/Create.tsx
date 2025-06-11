@@ -1,6 +1,9 @@
 import { useContext, useState, useEffect } from 'react';
 import PollsContext from '../Service/PollsContext';
 import Modal from 'react-modal';
+import { createPoll } from '../Service/Api';
+import type { Poll, Option } from '../Types';
+import { toast } from 'react-toastify';
 
 const customStyles = {
     content: {
@@ -15,10 +18,12 @@ const customStyles = {
         fontSize: '1.2rem', // Adjusted for better fit with new styles
         minWidth: '50%',
         maxWidth: '600px', // Added for better responsiveness
+        maxHeight: '70vh', // Added to prevent overflow
         border: '1px solid var(--menu-bg)', // Added
         borderRadius: '12px', // Added
         boxShadow: 'var(--shadow)', // Added
-        padding: '2rem' // Added for better spacing
+        padding: '2rem', // Added for better spacing
+        zIndex: 1000, // Added to ensure modal is on top
     },
     overlay: {
         backgroundColor: 'rgba(0, 0, 0, 0.75)',
@@ -26,7 +31,7 @@ const customStyles = {
 }
 
 const Create = () => {
-    const { createModalIsOpen, setCreateModalIsOpen } = useContext(PollsContext);
+    const { createModalIsOpen, setCreateModalIsOpen, accessToken, user } = useContext(PollsContext);
     const [pollTitle, setPollTitle] = useState('');
     const [numOptions, setNumOptions] = useState(2);
     const [options, setOptions] = useState(Array(2).fill(''));
@@ -51,8 +56,44 @@ const Create = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle form submission with pollTitle and options
-        console.log({ pollTitle, options });
+        if (pollTitle.trim() === '' || options.some(option => option.trim() === '')) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        if(!accessToken || !user || !user.id) {
+            alert('You must be logged in to create a poll.');
+            return;
+        }
+
+        const optionRes: Option[] = options.map((option) => ({
+            id: null,
+            optionText: option,
+            votesCount: 0,
+            pollId: null,
+        }));
+
+        const poll: Poll = {
+            id: null,
+            question: pollTitle,
+            creator_id: user.id,
+            options: optionRes,
+        };
+
+
+        createPoll(poll, accessToken)
+            .then((response) => {
+                if (response.statusCode === 201) {
+                    toast.success('Poll created successfully!');
+                } else {
+                    toast.error('Failed to create poll. Please try again.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error creating poll:', error);
+                console.log("message: ", error.message);
+            });
+
         closeModal();
     };
 

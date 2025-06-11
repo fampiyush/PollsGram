@@ -49,4 +49,10 @@ public class Poll {
         options.add(option);
         option.setPoll(this);
     }
+    public User getCreator() {
+        return creator;
+    }
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
 }

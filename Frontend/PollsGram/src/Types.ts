@@ -1,14 +1,15 @@
 export type Poll = {
-  id: number;
+  id: number | null;
   question: string;
+  creator_id?: number | null;
   options: Option[];
 }
 
 export type Option = {
-  id: number;
+  id: number | null;
   optionText: string;
   votesCount: number;
-  pollId: number;
+  pollId: number | null;
 }
 
 export type JwtPayload = {

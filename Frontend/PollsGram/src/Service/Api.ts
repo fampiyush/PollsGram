@@ -5,8 +5,8 @@ const GET_POLLS_PAGE = '/polls/page/'; // required /pageNumber
 const GET_ACCESS_TOKEN = '/auth/access-token'; // required userId as query parameter
 
 // POST
-const POST_POLL = '/polls/create/';
-const POST_OPTION = '/options/create/';
+const POST_POLL = '/polls/create';
+const POST_OPTION = '/options/create';
 const POST_GOOGLE_AUTH = '/auth/google'; 
 
 // PATCH
@@ -46,8 +46,9 @@ export const createPoll = async (poll: Poll, accessToken: string) => {
     if (!response.ok) {
         throw new Error('Failed to create poll');
     }
+    const statusCode = response.status;
     const data = await response.json();
-    return data;
+    return {data, statusCode};
 }
 
 export const createOption = async (option: Option, accessToken: string) => {

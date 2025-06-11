@@ -109,6 +109,7 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   padding: 20px;
   min-width: 0;      /* Allow shrinking */
+  max-width: 600px;
 }
 
 .poll-card > p {

@@ -18,10 +18,12 @@ import java.util.List;
 public class PollService {
 
     private final PollRepository pollRepository;
+    private final UserService userService;
 
     @Autowired
-    public PollService(PollRepository pollRepository) {
+    public PollService(PollRepository pollRepository, UserService userService) {
         this.pollRepository = pollRepository;
+        this.userService = userService;
     }
 
     public List<PollDTO> getPolls(int pageNumber) {
@@ -54,6 +56,7 @@ public class PollService {
     public Boolean createPoll(PollDTO poll) {
         Poll pollEntity = new Poll();
         pollEntity.setQuestion(poll.getQuestion());
+        pollEntity.setCreator(userService.getUserById(poll.getCreator_id()));
         pollEntity.setOptions(poll.getOptions().stream()
                 .map(optionDTO -> {
                     Option option = new Option();

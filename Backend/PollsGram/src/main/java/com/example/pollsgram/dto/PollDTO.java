@@ -9,6 +9,7 @@ public class PollDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String question;
+    private Long creator_id;
     private List<OptionDTO> options;
 
     public String getQuestion() {
@@ -33,5 +34,11 @@ public class PollDTO {
 
     public void setOptions(List<OptionDTO> options) {
         this.options = options;
+    }
+    public Long getCreator_id() {
+        return creator_id;
+    }
+    public void setCreator_id(Long creator_id) {
+        this.creator_id = creator_id;
     }
 }

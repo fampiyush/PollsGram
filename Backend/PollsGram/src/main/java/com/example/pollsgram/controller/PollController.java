@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/polls")
@@ -32,32 +33,32 @@ public class PollController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createPoll(@RequestBody PollDTO poll) {
+    public ResponseEntity<Map<String, String>> createPoll(@RequestBody PollDTO poll) {
         boolean isCreated = pollService.createPoll(poll);
         if (isCreated) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Poll created successfully.");
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "Poll created successfully."));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create poll.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Failed to create poll."));
         }
     }
 
     @PatchMapping("/update/question/{id}")
-    public ResponseEntity<String> updatePoll(@PathVariable Long id, @RequestBody String question) {
+    public ResponseEntity<Map<String, String>> updatePoll(@PathVariable Long id, @RequestBody String question) {
         boolean isUpdated = pollService.updatePollQuestion(id, question);
         if (isUpdated) {
-            return ResponseEntity.status(HttpStatus.OK).body("Poll updated successfully.");
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Poll updated successfully."));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update poll.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Failed to update poll."));
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deletePoll(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> deletePoll(@PathVariable Long id) {
         boolean isDeleted = pollService.deletePoll(id);
         if (isDeleted) {
-            return ResponseEntity.status(HttpStatus.OK).body("Poll deleted successfully.");
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Poll deleted successfully."));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to delete poll.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Failed to delete poll."));
         }
     }
 }

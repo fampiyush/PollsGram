@@ -63,7 +63,11 @@ const Header = () => {
       <h1 id='header-title'>PollsGram</h1>
       <div id='header-menu-container'>
         <button className="header-menu-btn">Home</button>
-        <button className="header-menu-btn" onClick={() => setCreateModalIsOpen(!createModalIsOpen)}>
+        <button 
+          style={{ display: accessToken===null ? 'none' : 'block' }} 
+          className="header-menu-btn" 
+          onClick={() => setCreateModalIsOpen(!createModalIsOpen)}
+        >
           Create
         </button>
 
