@@ -7,7 +7,7 @@ import PollCard from './PollCard'
 const PollsView = () => {
   const [page, setPage] = useState(0);
   const [polls, setPolls] = useState({});
-  const [noMorePolls, setNoMorePolls] = useState(false); // Added state to track if there are no more polls
+  const [noMorePolls, setNoMorePolls] = useState(true); // Added state to track if there are no more polls
 
   const { accessToken } = useContext(PollsContext);
 
