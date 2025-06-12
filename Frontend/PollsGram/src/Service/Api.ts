@@ -3,6 +3,7 @@ import type { Poll, Option } from '../Types';
 // GET
 const GET_POLLS_PAGE = '/polls/page/'; // required /pageNumber
 const GET_ACCESS_TOKEN = '/auth/access-token'; // required userId as query parameter
+const GET_POLLS_USER = '/polls/user/'; // required /userId
 
 // POST
 const POST_POLL = '/polls/create';
@@ -28,6 +29,22 @@ export const getPollsByPage = async (page: number, accessToken: string) => {
     });
     if (!response.ok) {
         throw new Error('Failed to fetch polls');
+    }
+    const data = await response.json();
+    return data;
+}
+
+export const getPollsByUserId = async (userId: number, accessToken: string) => {
+    const url = `${import.meta.env.VITE_BASE_API_URL}${GET_POLLS_USER}${userId}`;
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to fetch user polls');
     }
     const data = await response.json();
     return data;

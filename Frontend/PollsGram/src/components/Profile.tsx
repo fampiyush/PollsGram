@@ -1,30 +1,29 @@
 import { useContext, useEffect, useState } from 'react'
-import PollsContext from '../Service/PollsContext.tsx'// Assuming this function will be created
+import PollsContext from '../Service/PollsContext.tsx'
 import type { Poll } from '../Types';
 import PollCard from './PollCard';
-// import '../App.css'; // Styles will be in App.css
+import { getPollsByUserId } from '../Service/Api.ts';
 
 const Profile = () => {
-    const { user, setAccessToken, setUser } = useContext(PollsContext);
-    // const [userPolls, setUserPolls] = useState<Record<string, Poll>>({});
+    const { user, setAccessToken, setUser, accessToken } = useContext(PollsContext);
+    const [userPolls, setUserPolls] = useState({});
 
     useEffect(() => {
         const fetchUserPolls = async () => {
-            // if (user && user.id && user.email) { // user.email was used in old code, ensure user.id is primary
-            //     try {
-            //         // We'll need to ensure getPollsByUserId is implemented in Api.ts
-            //         // For now, assuming it takes userId and accessToken
-            //         const pollsData = await getPollsByUserId(user.id, localStorage.getItem('accessToken') || '');
-            //         setUserPolls(pollsData);
-            //     } catch (error) {
-            //         console.error("Failed to fetch user polls:", error);
-            //         setUserPolls({}); // Reset or handle error appropriately
-            //     }
-            // }
+            if (!user.id || !accessToken) {
+                return;
+            }
+            try {
+                const data = await getPollsByUserId(user.id, accessToken);
+                setUserPolls(data);
+                console.log('User Polls:', data);
+            } catch (error) {
+                console.error('Error fetching user polls:', error);
+            }
         };
 
         fetchUserPolls();
-    }, [user]);
+    }, [user, accessToken]);
 
     const handleLogout = () => {
         setAccessToken(null);
@@ -36,24 +35,25 @@ const Profile = () => {
     <div className='profile-container'>
         <div className="profile-header">
             <h2>Profile</h2>
-            <button onClick={handleLogout} className="logout-button header-menu-btn">Logout</button>
         </div>
         <div className="profile-info">
             <p><strong>Email:</strong> {user.email}</p>
         </div>
-
         <div className="user-polls-section">
             <h3>Your Polls</h3>
-            {/* {userPolls && Object.keys(userPolls).length > 0 ? (
+            <hr />
+            {userPolls && Object.keys(userPolls).length > 0 ? (
                 <div className="polls-grid">
                     {Object.entries(userPolls).map(([key, poll]) => (
-                        <PollCard key={key} {...poll} />
+                        <PollCard key={key} {...poll as Poll} />
                     ))}
                 </div>
             ) : (
                 <p>You haven't created any polls yet.</p>
-            )} */}
+            )}
         </div>
+        <hr />
+        <button onClick={handleLogout} className="logout-button header-menu-btn">Logout</button>
     </div>
   )
 }

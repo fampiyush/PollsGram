@@ -52,6 +52,17 @@ public class PollService {
         return pollDTO;
     }
 
+    public List<PollDTO> getPollsByUser(Long userId) {
+        List<Poll> polls = pollRepository.findAllByCreatorId(userId);
+        return polls.stream()
+                .map(poll -> {
+                    PollDTO pollDTO = new PollDTO();
+                    pollToPollDTO(poll, pollDTO);
+                    return pollDTO;
+                })
+                .toList();
+    }
+
     @Transactional
     public Boolean createPoll(PollDTO poll) {
         Poll pollEntity = new Poll();

@@ -32,6 +32,17 @@ public class PollController {
         return poll;
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PollDTO>> getPollsByUser(@PathVariable Long userId) {
+        System.out.println("Fetching polls for user ID: " + userId);
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(List.of());
+        }
+
+        List<PollDTO> polls = pollService.getPollsByUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(polls);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createPoll(@RequestBody PollDTO poll) {
         boolean isCreated = pollService.createPoll(poll);
