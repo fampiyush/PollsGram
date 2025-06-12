@@ -8,7 +8,8 @@ const GET_POLLS_USER = '/polls/user/'; // required /userId
 // POST
 const POST_POLL = '/polls/create';
 const POST_OPTION = '/options/create';
-const POST_GOOGLE_AUTH = '/auth/google'; 
+const POST_GOOGLE_AUTH = '/auth/google';
+const POST_LOGOUT = '/auth/logout';
 
 // PATCH
 const PATCH_POLL_QUESTION = '/polls/update/question/'; // required /pollsId
@@ -97,6 +98,24 @@ export const updatePollQuestion = async (pollId: number, question: string, acces
     });
     if (!response.ok) {
         throw new Error('Failed to update poll question');
+    }
+    const data = await response.json();
+    return data;
+}
+
+export const logout = async (userId: number, accessToken: string) => {
+    const url = `${import.meta.env.VITE_BASE_API_URL}${POST_LOGOUT}`;
+    const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify( userId ),
+    });
+    if (!response.ok) {
+        throw new Error('Failed to logout');
     }
     const data = await response.json();
     return data;

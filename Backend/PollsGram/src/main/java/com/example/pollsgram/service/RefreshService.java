@@ -46,4 +46,11 @@ public class RefreshService {
         return refreshRepository.findById(user.getId())
                 .orElse(null);
     }
+
+    public void deleteRefreshToken(Long userid) {
+        RefreshToken existingToken = refreshRepository.findById(userid).orElse(null);
+        if (existingToken != null) {
+            refreshRepository.delete(existingToken);
+        }
+    }
 }

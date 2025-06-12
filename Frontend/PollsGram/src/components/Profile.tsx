@@ -2,7 +2,8 @@ import { useContext, useEffect, useState } from 'react'
 import PollsContext from '../Service/PollsContext.tsx'
 import type { Poll } from '../Types';
 import PollCard from './PollCard';
-import { getPollsByUserId } from '../Service/Api.ts';
+import { getPollsByUserId, logout } from '../Service/Api.ts';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
     const { user, setAccessToken, setUser, accessToken } = useContext(PollsContext);
@@ -26,9 +27,22 @@ const Profile = () => {
     }, [user, accessToken]);
 
     const handleLogout = () => {
+        if (!user.id || !accessToken) {
+            toast.error('You are not logged in');
+            return;
+        }
+        logout(user.id, accessToken)
+            .then(() => {
+                toast.success('Logout successful');
+            })
+            .catch((error) => {
+                console.error('Logout failed:', error);
+                toast.error('Logout failed');
+            });
         setAccessToken(null);
         setUser({ id: null, email: null });
         localStorage.removeItem('userId');
+        window.location.href = '/'; // Redirect to home page after logout
     };
 
   return (

@@ -2,6 +2,7 @@ package com.example.pollsgram.controller;
 
 import com.example.pollsgram.model.User;
 import com.example.pollsgram.service.GoogleService;
+import com.example.pollsgram.service.RefreshService;
 import com.example.pollsgram.service.UserService;
 import com.google.api.client.util.Value;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,14 @@ public class AuthController {
 
     private final GoogleService googleService;
     private final UserService userService;
+    private final RefreshService refreshService;
     @Value("${overHttps}")
     private boolean overHttps;
 
-    public AuthController(GoogleService googleService, UserService userService) {
+    public AuthController(GoogleService googleService, UserService userService, RefreshService refreshService) {
         this.googleService = googleService;
         this.userService = userService;
+        this.refreshService = refreshService;
     }
 
     @PostMapping("/google")
@@ -45,6 +48,28 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header("Set-Cookie", refreshTokenCookie.toString())
                 .body(Map.of("accessToken", tokens.get("accessToken")));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestParam Long userId) {
+        if (userId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        // Invalidate the refresh token for the user
+        refreshService.deleteRefreshToken(userId);
+
+        // Create HttpOnly cookie with empty value to clear it
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(overHttps)
+                .path("/") // change it later
+                .maxAge(0) // Expire immediately
+                .sameSite("Lax")
+                .build();
+
+        return ResponseEntity.ok()
+                .header("Set-Cookie", refreshTokenCookie.toString())
+                .build();
     }
 
     @GetMapping("/access-token")

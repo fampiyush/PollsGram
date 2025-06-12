@@ -34,7 +34,6 @@ public class PollController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<PollDTO>> getPollsByUser(@PathVariable Long userId) {
-        System.out.println("Fetching polls for user ID: " + userId);
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(List.of());
         }
