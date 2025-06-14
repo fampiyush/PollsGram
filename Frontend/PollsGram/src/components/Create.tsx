@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import PollsContext from '../Service/PollsContext';
 import Modal from 'react-modal';
-import { createPoll } from '../Service/Api';
+import { createPoll, ACCESS_TOKEN } from '../Service/Api';
 import type { Poll, Option } from '../Types';
 import { toast } from 'react-toastify';
 
@@ -31,7 +31,7 @@ const customStyles = {
 }
 
 const Create = () => {
-    const { createModalIsOpen, setCreateModalIsOpen, accessToken, user } = useContext(PollsContext);
+    const { createModalIsOpen, setCreateModalIsOpen, user } = useContext(PollsContext);
     const [pollTitle, setPollTitle] = useState('');
     const [numOptions, setNumOptions] = useState(2);
     const [options, setOptions] = useState(Array(2).fill(''));
@@ -61,7 +61,7 @@ const Create = () => {
             return;
         }
 
-        if(!accessToken || !user || !user.id) {
+        if(!ACCESS_TOKEN || !user || !user.id) {
             alert('You must be logged in to create a poll.');
             return;
         }
@@ -81,7 +81,7 @@ const Create = () => {
         };
 
 
-        createPoll(poll, accessToken)
+        createPoll(poll)
             .then((response) => {
                 if (response.statusCode === 201) {
                     toast.success('Poll created successfully!');

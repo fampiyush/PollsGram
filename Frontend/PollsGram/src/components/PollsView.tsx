@@ -1,23 +1,20 @@
 import { useEffect, useState, useContext } from 'react';
 import { getPollsByPage } from '../Service/Api';
-import PollsContext from '../Service/PollsContext.tsx';
 import type { Poll } from '../Types';
 import PollCard from './PollCard'
+import PollsContext from '../Service/PollsContext';
 
 const PollsView = () => {
   const [page, setPage] = useState(0);
   const [polls, setPolls] = useState({});
   const [noMorePolls, setNoMorePolls] = useState(true); // Added state to track if there are no more polls
 
-  const { accessToken } = useContext(PollsContext);
+  const { user } = useContext(PollsContext);
 
   useEffect(() => {
     const fetchPolls = async () => {
       try {
-        if (!accessToken) {
-          return;
-        }
-        const data = await getPollsByPage(page, accessToken);
+        const data = await getPollsByPage(page);
         setPolls(data);
         setNoMorePolls(Object.keys(data).length < 5); // Update based on fetched data: true if less than 5 polls
       } catch (error) {
@@ -27,7 +24,7 @@ const PollsView = () => {
     }
 
     fetchPolls();
-  },[page, accessToken]);
+  },[page, user.id]);
 
   const handlePreviousPage = () => {
     setPage(prevPage => Math.max(0, prevPage - 1));

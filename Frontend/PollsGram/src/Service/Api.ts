@@ -1,4 +1,5 @@
 import type { Poll, Option } from '../Types';
+import axios from 'axios';
 
 // GET
 const GET_POLLS_PAGE = '/polls/page/'; // required /pageNumber
@@ -19,186 +20,223 @@ const PATCH_OPTION_TEXT = '/options/update/';
 const DELETE_POLL = '/polls/delete/'; // required /pollId
 const DELETE_OPTION = '/options/delete/'; // required /optionId
 
-export const getPollsByPage = async (page: number, accessToken: string) => {
+export let ACCESS_TOKEN: string | null = null;
+
+axios.interceptors.request.use(
+    (config) => {
+        if (ACCESS_TOKEN) {
+            config.headers['Authorization'] = `Bearer ${ACCESS_TOKEN}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+export const getPollsByPage = async (page: number) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${GET_POLLS_PAGE}${page}`;
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-    });
-    if (!response.ok) {
-        throw new Error('Failed to fetch polls');
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to fetch polls: ${error.message}`);
+        }
+        throw new Error('Failed to fetch polls: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }
 
-export const getPollsByUserId = async (userId: number, accessToken: string) => {
+export const getPollsByUserId = async (userId: number) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${GET_POLLS_USER}${userId}`;
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-    });
-    if (!response.ok) {
-        throw new Error('Failed to fetch user polls');
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to fetch user polls: ${error.message}`);
+        }
+        throw new Error('Failed to fetch user polls: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }
 
-export const createPoll = async (poll: Poll, accessToken: string) => {
+export const createPoll = async (poll: Poll) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${POST_POLL}`;
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(poll),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to create poll');
+    try {
+        const response = await axios.post(url, poll, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return { data: response.data, statusCode: response.status };
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to create poll: ${error.message}`);
+        }
+        throw new Error('Failed to create poll: An unknown error occurred');
     }
-    const statusCode = response.status;
-    const data = await response.json();
-    return {data, statusCode};
 }
 
-export const createOption = async (option: Option, accessToken: string) => {
+export const createOption = async (option: Option) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${POST_OPTION}`;
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(option),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to create option');
+    try {
+        const response = await axios.post(url, option, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to create option: ${error.message}`);
+        }
+        throw new Error('Failed to create option: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }
 
-export const updatePollQuestion = async (pollId: number, question: string, accessToken: string) => {
+export const updatePollQuestion = async (pollId: number, question: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${PATCH_POLL_QUESTION}${pollId}`;
-    const response = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question }),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to update poll question');
+    try {
+        const response = await axios.patch(url, { question }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to update poll question: ${error.message}`);
+        }
+        throw new Error('Failed to update poll question: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }
 
-export const logout = async (userId: number, accessToken: string) => {
+export const logout = async (userId: number) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${POST_LOGOUT}`;
-    const response = await fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify( userId ),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to logout');
+    try {
+        const response = await axios.post(url, { userId }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+        if (response.status === 200) {
+            ACCESS_TOKEN = null; // Clear the access token on logout
+            return response.data;
+        } else {
+            throw new Error('Logout failed: Unexpected response status');
+        }
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to logout: ${error.message}`);
+        }
+        throw new Error('Failed to logout: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }
 
-export const updateOptionText = async (optionId: number, text: string, accessToken: string) => {
+export const updateOptionText = async (optionId: number, text: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${PATCH_OPTION_TEXT}${optionId}`;
-    const response = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text }),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to update option text');
+    try {
+        const response = await axios.patch(url, { text }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to update option text: ${error.message}`);
+        }
+        throw new Error('Failed to update option text: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }
 
-export const deletePoll = async (pollId: number, accessToken: string) => {
+export const deletePoll = async (pollId: number) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${DELETE_POLL}${pollId}`;
-    const response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-    });
-    if (!response.ok) {
-        throw new Error('Failed to delete poll');
+    try {
+        const response = await axios.delete(url, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to delete poll: ${error.message}`);
+        }
+        throw new Error('Failed to delete poll: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }
 
-export const deleteOption = async (optionId: number, accessToken: string) => {
+export const deleteOption = async (optionId: number) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${DELETE_OPTION}${optionId}`;
-    const response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-    });
-    if (!response.ok) {
-        throw new Error('Failed to delete option');
+    try {
+        const response = await axios.delete(url, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to delete option: ${error.message}`);
+        }
+        throw new Error('Failed to delete option: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }
 
 export const googleAuth = async (credential: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${POST_GOOGLE_AUTH}`;
-    const response = await fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ credential }),
-    });
-    if (!response.ok) {
-        throw new Error('Failed to authenticate with Google');
+    try {
+        const response = await axios.post(url, { credential }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+        if (response.data.accessToken) {
+            ACCESS_TOKEN = response.data.accessToken;
+            return response.data;
+        } else {
+            throw new Error('No access token received from Google authentication');
+        }
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to authenticate with Google: ${error.message}`);
+        }
+        throw new Error('Failed to authenticate with Google: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }
 
 export const getAccessToken = async (userId: number) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${GET_ACCESS_TOKEN}?userId=${userId}`;
-    const response = await fetch(url, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    if (!response.ok) {
-        throw new Error('Failed to fetch access token: ' + response.statusText);
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+        if (response.data.accessToken) {
+            ACCESS_TOKEN = response.data.accessToken;
+            return response.data;
+        } else {
+            throw new Error('No access token received');
+        }
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response) {
+            throw new Error(`Failed to fetch access token: ${error.response.statusText}`);
+        } else if (error instanceof Error) {
+            throw new Error(`Failed to fetch access token: ${error.message}`);
+        }
+        throw new Error('Failed to fetch access token: An unknown error occurred');
     }
-    const data = await response.json();
-    return data;
 }

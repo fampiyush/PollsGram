@@ -1,10 +1,5 @@
 import React, { createContext, useState } from 'react';
 
-interface AccessTokenType {
-    accessToken: string | null;
-    setAccessToken: (token: string | null) => void;
-}
-
 interface UserType {
     id: number | null;
     email: string | null;
@@ -20,11 +15,6 @@ interface ModalContextType {
     setCreateModalIsOpen: (isOpen: boolean) => void;
 }
 
-const defaultAccessToken: AccessTokenType = {
-  accessToken: null,
-  setAccessToken: () => {},
-};
-
 const defaultUser: UserContextType = {
     user: {
         id: null,
@@ -38,10 +28,9 @@ const defaultModal: ModalContextType = {
     setCreateModalIsOpen: () => {},
 };
 
-interface PollsContextType extends AccessTokenType, UserContextType, ModalContextType {}
+interface PollsContextType extends UserContextType, ModalContextType {}
 
 const defaultValue: PollsContextType = {
-    ...defaultAccessToken,
     ...defaultUser,
     ...defaultModal,
 };
@@ -49,7 +38,6 @@ const defaultValue: PollsContextType = {
 const PollsContext = createContext<PollsContextType>(defaultValue);
 
 export const PollsContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [accessToken, setAccessToken] = useState<string | null>(null);
     const [user, setUser] = useState<UserType>({
         id: null,
         email: null,
@@ -57,7 +45,7 @@ export const PollsContextProvider = ({ children }: { children: React.ReactNode }
     const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
 
     return (
-        <PollsContext.Provider value={{ accessToken, setAccessToken, user, setUser, createModalIsOpen, setCreateModalIsOpen }}>
+        <PollsContext.Provider value={{ user, setUser, createModalIsOpen, setCreateModalIsOpen }}>
             {children}
         </PollsContext.Provider>
     );

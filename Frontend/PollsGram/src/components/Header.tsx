@@ -1,5 +1,5 @@
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
-import { googleAuth, getAccessToken } from '../Service/Api';
+import { googleAuth, getAccessToken, ACCESS_TOKEN } from '../Service/Api';
 import { useContext, useEffect } from 'react';
 import PollsContext from '../Service/PollsContext.tsx';
 import { jwtDecode } from 'jwt-decode';
@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'; // Added Link import
 
 const Header = () => {
 
-  const { setAccessToken, setUser, accessToken, createModalIsOpen, setCreateModalIsOpen } = useContext(PollsContext);
+  const { setUser, createModalIsOpen, setCreateModalIsOpen } = useContext(PollsContext);
 
   useEffect(() => { 
     const userId = localStorage.getItem('userId');
@@ -19,7 +19,6 @@ const Header = () => {
           .then((response) => {
             if (response.accessToken) {
               const accessToken = response.accessToken;
-              setAccessToken(accessToken);
               setInfo(accessToken);
             } else {
               console.error('Failed to retrieve access token');
@@ -39,7 +38,6 @@ const Header = () => {
       .then((response) => {
         if (response.accessToken) {
           const accessToken = response.accessToken;
-          setAccessToken(accessToken);
           setInfo(accessToken);
         } else {
           console.error('Login failed');
@@ -67,7 +65,7 @@ const Header = () => {
           <button className="header-menu-btn">Home</button>
         </Link>
         <button
-          style={{ display: accessToken===null ? 'none' : 'block' }}
+          style={{ display: ACCESS_TOKEN===null ? 'none' : 'block' }}
           className="header-menu-btn"
           onClick={() => setCreateModalIsOpen(!createModalIsOpen)}
         >
@@ -75,7 +73,7 @@ const Header = () => {
         </button>
 
         {
-          !accessToken ? (
+          !ACCESS_TOKEN ? (
             <GoogleLogin
               onSuccess={(credentialResponse) => {
                 handleLoginSuccess(credentialResponse);
