@@ -52,6 +52,16 @@ public class PollController {
         }
     }
 
+    @PostMapping("/vote")
+    public ResponseEntity<Map<String, String>> votePoll(@RequestParam Long userId, @RequestParam Long pollId, @RequestParam Long optionId) {
+        boolean isVoted = pollService.votePoll(userId, pollId, optionId);
+        if (isVoted) {
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Vote recorded successfully."));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Failed to record vote."));
+        }
+    }
+
     @PatchMapping("/update/question/{id}")
     public ResponseEntity<Map<String, String>> updatePoll(@PathVariable Long id, @RequestBody String question) {
         boolean isUpdated = pollService.updatePollQuestion(id, question);

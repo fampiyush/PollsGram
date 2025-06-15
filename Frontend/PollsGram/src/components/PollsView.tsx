@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { getPollsByPage } from '../Service/Api';
+import { getPollsByPage, ACCESS_TOKEN } from '../Service/Api';
 import type { Poll } from '../Types';
 import PollCard from './PollCard'
 import PollsContext from '../Service/PollsContext';
@@ -12,6 +12,9 @@ const PollsView = () => {
   const { user } = useContext(PollsContext);
 
   useEffect(() => {
+    if(!user.id || !ACCESS_TOKEN) {
+      return;
+    }
     const fetchPolls = async () => {
       try {
         const data = await getPollsByPage(page);

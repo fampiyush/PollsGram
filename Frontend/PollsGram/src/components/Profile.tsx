@@ -17,7 +17,6 @@ const Profile = () => {
             try {
                 const data = await getPollsByUserId(user.id);
                 setUserPolls(data);
-                console.log('User Polls:', data);
             } catch (error) {
                 console.error('Error fetching user polls:', error);
             }

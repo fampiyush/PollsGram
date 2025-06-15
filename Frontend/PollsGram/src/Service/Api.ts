@@ -34,6 +34,73 @@ axios.interceptors.request.use(
     }
 );
 
+axios.interceptors.response.use(
+    (response) => {
+        // This is the success handler, called for 2xx status codes
+        return response;
+    },
+    async (error) => {
+        const originalRequest = error.config;
+        const originalRequestUrl = originalRequest.url || '';
+        // Check if the original request was to an auth endpoint that shouldn't trigger a token refresh cycle
+        const isAuthEndpointRequest = originalRequestUrl.includes(GET_ACCESS_TOKEN) || originalRequestUrl.includes(POST_LOGOUT);
+
+        // Check if the error is 401 or 403, not a retry attempt, and not an auth endpoint itself
+        if (error.response && 
+            (error.response.status === 401 || error.response.status === 403) && 
+            !originalRequest._retry && 
+            !isAuthEndpointRequest) {
+            originalRequest._retry = true; // Mark the request to avoid infinite loops
+
+            try {
+                const userId = localStorage.getItem('userId');
+                if (!userId) {
+                    // If no userId, cannot refresh token, treat as unauthenticated
+                    console.error("No userId found in localStorage, cannot refresh token.");
+                    ACCESS_TOKEN = null;
+                    window.location.href = '/'; // Redirect to home/login
+                    return Promise.reject(error);
+                }
+                const tokenData = await getAccessToken(Number(userId));
+
+                if (tokenData && tokenData.accessToken) {
+                    ACCESS_TOKEN = tokenData.accessToken; // Update global ACCESS_TOKEN
+                    // Update the Authorization header in the original request's config with the new token
+                    originalRequest.headers['Authorization'] = `Bearer ${tokenData.accessToken}`;
+                    
+                    // Retry the original request with the new token
+                    return axios(originalRequest);
+                } else {
+                    // Handle cases where token refresh failed or no token was returned
+                    console.error("Failed to refresh access token or no token returned.");
+                    ACCESS_TOKEN = null;
+                    localStorage.removeItem('userId');
+                    window.location.href = '/'; // Redirect to home/login
+                    return Promise.reject(error); // Reject with the original error
+                }
+            } catch (refreshError) {
+                // Handle errors during the token refresh process itself
+                console.error("Error during token refresh:", refreshError);
+                ACCESS_TOKEN = null; // Clear the access token
+                localStorage.removeItem('userId'); // Clear userId from localStorage
+                console.log('Token refresh failed. Redirecting to home page.');
+                window.location.href = '/'; // Redirect to home/login page
+                return Promise.reject(error); // Reject with the original error that led to the refresh attempt
+            }
+        } else if (error.response && (error.response.status === 401 || error.response.status === 403) && isAuthEndpointRequest) {
+            // If an auth endpoint itself fails with 401/403, clear local session and redirect.
+            console.error(`Authentication endpoint ${originalRequestUrl} failed. Clearing session and redirecting.`);
+            ACCESS_TOKEN = null;
+            localStorage.removeItem('userId');
+            window.location.href = '/';
+            return Promise.reject(error);
+        }
+
+        // For other errors or if token refresh is not applicable/failed, reject the promise
+        return Promise.reject(error);
+    }
+);
+
 export const getPollsByPage = async (page: number) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${GET_POLLS_PAGE}${page}`;
     try {

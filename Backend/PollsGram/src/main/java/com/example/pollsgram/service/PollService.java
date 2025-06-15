@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.example.pollsgram.dto.PollDTO;
+import com.example.pollsgram.model.Votes;
 
 import java.util.List;
 
@@ -112,6 +113,36 @@ public class PollService {
             return true;
         } catch (Exception e) {
             System.out.println("Error deleting poll: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Transactional
+    public Boolean votePoll(Long userId, Long pollId, Long optionId) {
+        Poll poll = pollRepository.findById(pollId).orElse(null);
+        if (poll == null) {
+            return false;
+        }
+        Option option = poll.getOptions().stream()
+                .filter(opt -> opt.getId().equals(optionId))
+                .findFirst()
+                .orElse(null);
+        if (option == null) {
+            return false;
+        }
+
+        Votes vote = new Votes();
+        vote.setUser(userService.getUserById(userId));
+        vote.setPoll(poll);
+        vote.setOption(option);
+
+        try {
+            // Save the vote to the database (assuming there's a VotesRepository)
+            votesRepository.save(vote);
+            option.setVotesCount(option.getVotesCount() + 1); // Increment vote count
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error voting on poll: " + e.getMessage());
             return false;
         }
     }
