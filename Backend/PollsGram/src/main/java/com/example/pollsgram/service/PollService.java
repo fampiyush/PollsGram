@@ -5,7 +5,6 @@ import com.example.pollsgram.model.Option;
 import com.example.pollsgram.model.Poll;
 import com.example.pollsgram.repository.PollRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,11 +19,13 @@ public class PollService {
 
     private final PollRepository pollRepository;
     private final UserService userService;
+    private final VotesService votesService;
 
     @Autowired
-    public PollService(PollRepository pollRepository, UserService userService) {
+    public PollService(PollRepository pollRepository, UserService userService, VotesService votesService) {
         this.pollRepository = pollRepository;
         this.userService = userService;
+        this.votesService = votesService;
     }
 
     public List<PollDTO> getPolls(int pageNumber) {
@@ -137,8 +138,7 @@ public class PollService {
         vote.setOption(option);
 
         try {
-            // Save the vote to the database (assuming there's a VotesRepository)
-            votesRepository.save(vote);
+            votesService.createVote(vote); // Save the vote
             option.setVotesCount(option.getVotesCount() + 1); // Increment vote count
             return true;
         } catch (Exception e) {
@@ -155,6 +155,14 @@ public class PollService {
     }
 
     private void pollToPollDTO(Poll poll, PollDTO pollDTO) {
+        Votes vote = votesService.getVote(poll.getCreator().getId(), poll.getId());
+        if (vote != null) {
+            pollDTO.setVoted(true);
+            pollDTO.setVotedOptionId(vote.getOption().getId());
+        } else {
+            pollDTO.setVoted(false);
+            pollDTO.setVotedOptionId(null);
+        }
         pollDTO.setId(poll.getId());
         pollDTO.setQuestion(poll.getQuestion());
         pollDTO.setOptions(poll.getOptions().stream()

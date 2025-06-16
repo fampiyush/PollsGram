@@ -11,6 +11,8 @@ public class PollDTO {
     private String question;
     private Long creator_id;
     private List<OptionDTO> options;
+    private boolean isVoted;
+    private Long votedOptionId;
 
     public String getQuestion() {
         return question;
@@ -40,5 +42,21 @@ public class PollDTO {
     }
     public void setCreator_id(Long creator_id) {
         this.creator_id = creator_id;
+    }
+
+    public boolean isVoted() {
+        return isVoted;
+    }
+
+    public void setVoted(boolean voted) {
+        isVoted = voted;
+    }
+
+    public Long getVotedOptionId() {
+        return votedOptionId;
+    }
+
+    public void setVotedOptionId(Long votedOptionId) {
+        this.votedOptionId = votedOptionId;
     }
 }
