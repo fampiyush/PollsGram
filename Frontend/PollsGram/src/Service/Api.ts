@@ -11,6 +11,7 @@ const POST_POLL = '/polls/create';
 const POST_OPTION = '/options/create';
 const POST_GOOGLE_AUTH = '/auth/google';
 const POST_LOGOUT = '/auth/logout';
+const POST_VOTE = '/polls/vote'; // required user id, poll id, and option id in body
 
 // PATCH
 const PATCH_POLL_QUESTION = '/polls/update/question/'; // required /pollsId
@@ -101,10 +102,11 @@ axios.interceptors.response.use(
     }
 );
 
-export const getPollsByPage = async (page: number) => {
+export const getPollsByPage = async (page: number, userId: number) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${GET_POLLS_PAGE}${page}`;
     try {
         const response = await axios.get(url, {
+            params: { userId },
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -166,6 +168,29 @@ export const createOption = async (option: Option) => {
             throw new Error(`Failed to create option: ${error.message}`);
         }
         throw new Error('Failed to create option: An unknown error occurred');
+    }
+}
+
+export const votePoll = async (userId: number, pollId: number, optionId: number) => {
+    const url = `${import.meta.env.VITE_BASE_API_URL}${POST_VOTE}`;
+    try {
+        const requestData = {
+            userId,
+            pollId,
+            optionId
+        };
+        const response = await axios.post(url, requestData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to vote on poll: ${error.message}`);
+        }
+        throw new Error('Failed to vote on poll: An unknown error occurred');
     }
 }
 

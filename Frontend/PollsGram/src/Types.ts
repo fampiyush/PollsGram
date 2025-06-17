@@ -3,6 +3,8 @@ export type Poll = {
   question: string;
   creator_id?: number | null;
   options: Option[];
+  voted: boolean;
+  votedOptionId: number | null;
 }
 
 export type Option = {

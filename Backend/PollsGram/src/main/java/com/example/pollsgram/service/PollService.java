@@ -28,13 +28,13 @@ public class PollService {
         this.votesService = votesService;
     }
 
-    public List<PollDTO> getPolls(int pageNumber) {
+    public List<PollDTO> getPolls(int pageNumber, Long userId) {
         Pageable pageable = PageRequest.of(pageNumber, 5);
         try {
             return pollRepository.findAll(pageable).getContent().stream()
                     .map(poll -> {
                         PollDTO pollDTO = new PollDTO();
-                        pollToPollDTO(poll, pollDTO);
+                        pollToPollDTO(poll, pollDTO, userId);
                         return pollDTO;
                     })
                     .toList();
@@ -50,7 +50,7 @@ public class PollService {
             return null;
         }
         PollDTO pollDTO = new PollDTO();
-        pollToPollDTO(returned, pollDTO);
+        pollToPollDTO(returned, pollDTO, id);
         return pollDTO;
     }
 
@@ -59,7 +59,7 @@ public class PollService {
         return polls.stream()
                 .map(poll -> {
                     PollDTO pollDTO = new PollDTO();
-                    pollToPollDTO(poll, pollDTO);
+                    pollToPollDTO(poll, pollDTO, userId);
                     return pollDTO;
                 })
                 .toList();
@@ -154,8 +154,8 @@ public class PollService {
         optionDTO.setPollId(option.getPoll().getId());
     }
 
-    private void pollToPollDTO(Poll poll, PollDTO pollDTO) {
-        Votes vote = votesService.getVote(poll.getCreator().getId(), poll.getId());
+    private void pollToPollDTO(Poll poll, PollDTO pollDTO, Long userId) {
+        Votes vote = votesService.getVote(userId, poll.getId());
         if (vote != null) {
             pollDTO.setVoted(true);
             pollDTO.setVotedOptionId(vote.getOption().getId());

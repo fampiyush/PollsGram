@@ -21,8 +21,8 @@ public class PollController {
     }
 
     @GetMapping("/page/{pageNumber}")
-    public List<PollDTO> listPolls(@PathVariable int pageNumber) {
-        List<PollDTO> polls = pollService.getPolls(pageNumber);
+    public List<PollDTO> listPolls(@PathVariable int pageNumber, @RequestParam Long userId) {
+        List<PollDTO> polls = pollService.getPolls(pageNumber, userId);
         return polls;
     }
 
@@ -53,8 +53,8 @@ public class PollController {
     }
 
     @PostMapping("/vote")
-    public ResponseEntity<Map<String, String>> votePoll(@RequestParam Long userId, @RequestParam Long pollId, @RequestParam Long optionId) {
-        boolean isVoted = pollService.votePoll(userId, pollId, optionId);
+    public ResponseEntity<Map<String, String>> votePoll(@RequestBody Map<String, Long> voteData) {
+        boolean isVoted = pollService.votePoll(voteData.get("userId"), voteData.get("pollId"), voteData.get("optionId"));
         if (isVoted) {
             return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Vote recorded successfully."));
         } else {
