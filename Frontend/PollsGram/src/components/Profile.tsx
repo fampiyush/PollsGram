@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
 import PollsContext from '../Service/PollsContext.tsx'
 import type { Poll } from '../Types';
-import PollCard from './PollCard';
+import PollCardSelf from './PollCardSelf.tsx';
 import { getPollsByUserId, logout, ACCESS_TOKEN } from '../Service/Api.ts';
 import { toast } from 'react-toastify';
 
 const Profile = () => {
     const { user, setUser } = useContext(PollsContext);
-    const [userPolls, setUserPolls] = useState({});
+    const [userPolls, setUserPolls] = useState<Record<string, Poll>>({});
 
     useEffect(() => {
         const fetchUserPolls = async () => {
@@ -43,6 +43,17 @@ const Profile = () => {
         window.location.href = '/'; // Redirect to home page after logout
     };
 
+    const handleDeletePoll = (pollId: number) => {
+        setUserPolls(currentPolls => {
+            const newPolls = { ...currentPolls };
+            const keyToDelete = Object.keys(newPolls).find(key => newPolls[key].id === pollId);
+            if (keyToDelete) {
+                delete newPolls[keyToDelete];
+            }
+            return newPolls;
+        });
+    };
+
   return (
     <div className='profile-container'>
         <div className="profile-header">
@@ -57,7 +68,7 @@ const Profile = () => {
             {userPolls && Object.keys(userPolls).length > 0 ? (
                 <div className="polls-grid">
                     {Object.entries(userPolls).map(([key, poll]) => (
-                        <PollCard key={key} {...poll as Poll} />
+                        <PollCardSelf key={key} initialPoll={poll as Poll} onDelete={handleDeletePoll} />
                     ))}
                 </div>
             ) : (
