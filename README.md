@@ -2,6 +2,8 @@
 
 PollsGram is a full-stack web application that allows users to create, share, and vote on polls. It features a modern, responsive frontend built with React and a robust backend powered by Spring Boot.
 
+![PollsGram Demo](demo.png)
+
 ## Features
 
 -   **Google Authentication**: Secure and easy login/signup using Google accounts.
