@@ -110,6 +110,7 @@ public class PollService {
             return false;
         }
         try {
+            votesService.deleteVotesByPoll(id); // Delete associated votes
             pollRepository.delete(poll);
             return true;
         } catch (Exception e) {

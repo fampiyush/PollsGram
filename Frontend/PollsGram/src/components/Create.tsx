@@ -85,6 +85,7 @@ const Create = () => {
             .then((response) => {
                 if (response.statusCode === 201) {
                     toast.success('Poll created successfully!');
+                    window.location.reload();
                 } else {
                     toast.error('Failed to create poll. Please try again.');
                 }

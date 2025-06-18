@@ -20,4 +20,12 @@ public class VotesService {
         return votesRepository.findByUserIdAndPollId(userId, pollId)
                 .orElse(null);
     }
+
+    public void deleteVotesByPoll(Long pollId) {
+        Votes vote = votesRepository.findByPollId(pollId)
+                .orElse(null);
+        if (vote != null) {
+            votesRepository.delete(vote);
+        }
+    }
 }
