@@ -4,6 +4,8 @@ PollsGram is a full-stack web application that allows users to create, share, an
 
 ![PollsGram Demo](demo.png)
 
+Demo - https://youtu.be/VAkng8oGIJM
+
 ## Features
 
 -   **Google Authentication**: Secure and easy login/signup using Google accounts.
