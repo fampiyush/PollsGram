@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import { createPoll, ACCESS_TOKEN } from '../Service/Api';
 import type { Poll, Option } from '../Types';
 import { toast } from 'react-toastify';
+import { IoClose } from "react-icons/io5";
 
 const customStyles = {
     content: {
@@ -104,11 +105,11 @@ const Create = () => {
             onRequestClose={closeModal}
             contentLabel="Create Poll"
             style={customStyles}
-            ariaHideApp={false} // Added to prevent console warnings, set appropriately for your app
+            ariaHideApp={false} // Added to prevent console warnings
         >
             <div className="create-container">
                 <h2>Create Poll</h2>
-                <form onSubmit={handleSubmit} className="create-form"> {/* Added className */}
+                <form onSubmit={handleSubmit} className="create-form">
                     <div className="form-group">
                         <label htmlFor="pollTitle">Poll Title:</label>
                         <input
@@ -151,9 +152,11 @@ const Create = () => {
                             />
                         </div>
                     ))}
-                    <button type="submit" className="submit-poll-btn">Create Poll</button> {/* Added className */}
+                    <button type="submit" className="submit-poll-btn">Create Poll</button>
                 </form>
-                <button onClick={closeModal} id='modal-close' className="modal-close-btn">❌</button> {/* Added className */}
+                <button onClick={closeModal} id='modal-close'>
+                    <IoClose color='red' className='modal-close-btn' />
+                </button>
             </div>
         </Modal>
     )
