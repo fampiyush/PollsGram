@@ -117,6 +117,9 @@ body {
   margin: 0;
   font-size: 1.2rem;
   margin-bottom: 12px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .poll-card-options {
@@ -135,6 +138,24 @@ body {
   padding: 6px 12px;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s, transform 0.2s, color 0.2s;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.poll-card-option span,
+.poll-card-option label {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  flex: 1;
+  min-width: 0;
+}
+
+.poll-card-option span:last-child {
+  flex: 0 0 auto;
+  margin-left: 8px;
+  white-space: nowrap;
 }
 
 .create-container {
