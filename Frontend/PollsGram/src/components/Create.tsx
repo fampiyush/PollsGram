@@ -118,6 +118,7 @@ const Create = () => {
                             name="pollTitle"
                             value={pollTitle}
                             onChange={(e) => setPollTitle(e.target.value)}
+                            maxLength={80}
                             required
                         />
                     </div>
@@ -148,6 +149,7 @@ const Create = () => {
                                 name={`option${index + 1}`}
                                 value={option}
                                 onChange={(e) => handleOptionChange(index, e.target.value)}
+                                maxLength={65}
                                 required
                             />
                         </div>
