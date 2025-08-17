@@ -14,17 +14,17 @@ const customStyles = {
         bottom: 'auto',
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
-        backgroundColor: 'var(--bg-color)', // Updated
-        color: 'var(--text-color)', // Added
-        fontSize: '1.2rem', // Adjusted for better fit with new styles
+        backgroundColor: 'var(--bg-color)',
+        color: 'var(--text-color)',
+        fontSize: '1.2rem',
         minWidth: '50%',
-        maxWidth: '600px', // Added for better responsiveness
-        maxHeight: '70vh', // Added to prevent overflow
-        border: '1px solid var(--menu-bg)', // Added
-        borderRadius: '12px', // Added
-        boxShadow: 'var(--shadow)', // Added
-        padding: '2rem', // Added for better spacing
-        zIndex: 1000, // Added to ensure modal is on top
+        maxWidth: '600px',
+        maxHeight: '70vh',
+        border: '1px solid var(--menu-bg)',
+        borderRadius: '12px',
+        boxShadow: 'var(--shadow)',
+        padding: '2rem',
+        zIndex: 1000,
     },
     overlay: {
         backgroundColor: 'rgba(0, 0, 0, 0.75)',

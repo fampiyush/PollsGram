@@ -4,7 +4,7 @@ import { useContext, useEffect } from 'react';
 import PollsContext from '../Service/PollsContext.tsx';
 import { jwtDecode } from 'jwt-decode';
 import type { JwtPayload } from '../Types.ts';
-import { Link } from 'react-router-dom'; // Added Link import
+import { Link } from 'react-router-dom';
 
 const Header = () => {
 
