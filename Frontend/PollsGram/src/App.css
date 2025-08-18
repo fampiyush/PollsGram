@@ -108,7 +108,7 @@ body {
   color: #f4faff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-  padding: 20px;
+  padding: 20px 20px 10px 20px;
   min-width: 0;      /* Allow shrinking */
   max-width: 600px;
 }
@@ -433,4 +433,63 @@ body {
 
 .confirm-dialog p {
     margin-bottom: 20px;
+}
+
+.likeUnlikeContainer {
+  margin-top: 14px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+.likeUnlikeContainer button {
+  background: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid rgba(255,255,255,0.18);
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.35rem;
+  transition: background 0.25s, color 0.25s, transform 0.15s, box-shadow 0.25s, border-color 0.25s;
+  position: relative;
+}
+
+.likeUnlikeContainer button:hover {
+  background: linear-gradient(135deg, #8a5db7 0%, #ef6a8e 100%);
+  color: #ffe9c7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  border-color: transparent;
+}
+
+.likeUnlikeContainer button:active {
+  transform: translateY(0);
+}
+
+/* Active (toggled) states */
+.likeUnlikeContainer .likeButton.active {
+  background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.likeUnlikeContainer .unlikeButton.active {
+  background: linear-gradient(135deg, #f44336 0%, #ef6a8e 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+/* Focus accessibility */
+.likeUnlikeContainer button:focus-visible {
+  outline: 3px solid #ffe9c7;
+  outline-offset: 2px;
 }

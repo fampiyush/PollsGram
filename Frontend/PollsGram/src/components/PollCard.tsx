@@ -3,16 +3,19 @@ import type { Poll, Option } from '../Types';
 import { votePoll } from '../Service/Api';
 import PollsContext from '../Service/PollsContext.tsx';
 import { toast } from 'react-toastify';
+import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "react-icons/ai";
 
 const PollCard = (initialPoll: Poll) => {
-    const [currentPoll, setCurrentPoll] = useState<Poll>(initialPoll);
-    const [selectedOption, setSelectedOption] = useState<Option | null>(null);
-    const { user } = useContext(PollsContext);
+  const [currentPoll, setCurrentPoll] = useState<Poll>(initialPoll);
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+  const [reaction, setReaction] = useState<'like' | 'unlike' | null>(null); // UI-only reaction state
+  const { user } = useContext(PollsContext);
 
-    useEffect(() => {
-        setCurrentPoll(initialPoll);
-        setSelectedOption(null);
-    }, [initialPoll]);
+  useEffect(() => {
+    setCurrentPoll(initialPoll);
+    setSelectedOption(null);
+    setReaction(null); // reset reaction when poll changes
+  }, [initialPoll]);
 
   const handleOptionSelect = (option: Option) => {
     if (!currentPoll.voted) {
@@ -107,6 +110,26 @@ const PollCard = (initialPoll: Poll) => {
             <button onClick={handleCancelVote} className="poll-button cancel-button">Cancel</button>
           </div>
         )}
+        <div className='likeUnlikeContainer'>
+          <button
+            className={`likeButton ${reaction === 'like' ? 'active' : ''}`}
+            onClick={() => setReaction(prev => (prev === 'like' ? null : 'like'))}
+            aria-pressed={reaction === 'like'}
+            title={reaction === 'like' ? 'Remove like' : 'Like'}
+            type="button"
+          >
+            {reaction === 'like' ? <AiFillLike /> : <AiOutlineLike />}
+          </button>
+          <button
+            className={`unlikeButton ${reaction === 'unlike' ? 'active' : ''}`}
+            onClick={() => setReaction(prev => (prev === 'unlike' ? null : 'unlike'))}
+            aria-pressed={reaction === 'unlike'}
+            title={reaction === 'unlike' ? 'Remove dislike' : 'Dislike'}
+            type="button"
+          >
+            {reaction === 'unlike' ? <AiFillDislike /> : <AiOutlineDislike />}
+          </button>
+        </div>
       </div>
     </div>
   );
