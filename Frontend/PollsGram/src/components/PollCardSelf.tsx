@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { Poll } from '../Types.ts';
 import { deletePoll } from '../Service/Api.ts';
 import { toast } from 'react-toastify';
+import {  AiFillLike, AiFillDislike } from "react-icons/ai";
 
 const PollCardSelf = ({ initialPoll, onDelete }: { initialPoll: Poll, onDelete: (pollId: number) => void }) => {
     const [currentPoll, setCurrentPoll] = useState<Poll>(initialPoll);
@@ -82,6 +83,28 @@ const PollCardSelf = ({ initialPoll, onDelete }: { initialPoll: Poll, onDelete: 
                             <span>{option.votesCount} votes</span>
                         </div>
                     ))}
+                </div>
+                <div className='likeUnlikeContainerSelf'>
+                    <div className="reaction-group">
+                            <button
+                                className={'likeButton'}
+                                type="button"
+                                aria-label="Likes"
+                            >
+                                    <AiFillLike />
+                            </button>
+                            <span className="reaction-count like-count">0</span>
+                    </div>
+                    <div className="reaction-group">
+                            <button
+                                className={'unlikeButton'}
+                                type="button"
+                                aria-label="Dislikes"
+                            >
+                                    <AiFillDislike />
+                            </button>
+                            <span className="reaction-count unlike-count">0</span>
+                    </div>
                 </div>
             </div>
         </div>
