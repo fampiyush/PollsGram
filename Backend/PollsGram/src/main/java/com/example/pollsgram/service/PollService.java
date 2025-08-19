@@ -176,4 +176,34 @@ public class PollService {
                 })
                 .toList());
     }
+
+    public boolean likePoll(Long pollId) {
+        Poll poll = pollRepository.findById(pollId).orElse(null);
+        if (poll == null) {
+            return false;
+        }
+        poll.setLikes(poll.getLikes() + 1);
+        try {
+            pollRepository.save(poll);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error liking poll: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean dislikePoll(Long pollId) {
+        Poll poll = pollRepository.findById(pollId).orElse(null);
+        if (poll == null) {
+            return false;
+        }
+        poll.setDislikes(poll.getDislikes() + 1);
+        try {
+            pollRepository.save(poll);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error disliking poll: " + e.getMessage());
+            return false;
+        }
+    }
 }
