@@ -13,6 +13,8 @@ public class PollDTO {
     private List<OptionDTO> options;
     private boolean isVoted;
     private Long votedOptionId;
+    private int likes;
+    private int dislikes;
 
     public String getQuestion() {
         return question;
@@ -58,5 +60,19 @@ public class PollDTO {
 
     public void setVotedOptionId(Long votedOptionId) {
         this.votedOptionId = votedOptionId;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getDislikes() {
+        return dislikes;
+    }
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
     }
 }

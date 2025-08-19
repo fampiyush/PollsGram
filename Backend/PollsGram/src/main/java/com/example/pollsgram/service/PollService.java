@@ -166,6 +166,8 @@ public class PollService {
         }
         pollDTO.setId(poll.getId());
         pollDTO.setQuestion(poll.getQuestion());
+        pollDTO.setLikes(poll.getLikes());
+        pollDTO.setDislikes(poll.getDislikes());
         pollDTO.setOptions(poll.getOptions().stream()
                 .map(option -> {
                     OptionDTO optionDTO = new OptionDTO();
