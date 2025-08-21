@@ -1,8 +1,7 @@
 package com.example.pollsgram.service;
 
 import com.example.pollsgram.dto.OptionDTO;
-import com.example.pollsgram.model.Option;
-import com.example.pollsgram.model.Poll;
+import com.example.pollsgram.model.*;
 import com.example.pollsgram.repository.PollRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.example.pollsgram.dto.PollDTO;
-import com.example.pollsgram.model.Votes;
 
 import java.util.List;
 
@@ -20,12 +18,15 @@ public class PollService {
     private final PollRepository pollRepository;
     private final UserService userService;
     private final VotesService votesService;
+    private final ReactionsService reactionsService;
 
     @Autowired
-    public PollService(PollRepository pollRepository, UserService userService, VotesService votesService) {
+    public PollService(PollRepository pollRepository, UserService userService, VotesService votesService,
+                       ReactionsService reactionsService) {
         this.pollRepository = pollRepository;
         this.userService = userService;
         this.votesService = votesService;
+        this.reactionsService = reactionsService;
     }
 
     public List<PollDTO> getPolls(int pageNumber, Long userId) {
@@ -177,11 +178,19 @@ public class PollService {
                 .toList());
     }
 
-    public boolean likePoll(Long pollId) {
+    @Transactional
+    public boolean likePoll(Long pollId, Long userId) {
         Poll poll = pollRepository.findById(pollId).orElse(null);
         if (poll == null) {
             return false;
         }
+
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return false;
+        }
+
+        reactionsService.createReaction(user, poll, ReactionType.LIKE);
         poll.setLikes(poll.getLikes() + 1);
         try {
             pollRepository.save(poll);
@@ -192,11 +201,19 @@ public class PollService {
         }
     }
 
-    public boolean dislikePoll(Long pollId) {
+    @Transactional
+    public boolean dislikePoll(Long pollId, Long userId) {
         Poll poll = pollRepository.findById(pollId).orElse(null);
         if (poll == null) {
             return false;
         }
+
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return false;
+        }
+
+        reactionsService.createReaction(user, poll, ReactionType.DISLIKE);
         poll.setDislikes(poll.getDislikes() + 1);
         try {
             pollRepository.save(poll);
