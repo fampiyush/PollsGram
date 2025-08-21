@@ -3,7 +3,7 @@ package com.example.pollsgram.model;
 import jakarta.persistence.*;
 
 @Entity
-public class Reactions {
+public class Reaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
