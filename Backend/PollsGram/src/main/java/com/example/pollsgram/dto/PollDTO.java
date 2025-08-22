@@ -1,6 +1,7 @@
 package com.example.pollsgram.dto;
 
 
+import com.example.pollsgram.model.ReactionType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public class PollDTO {
     private List<OptionDTO> options;
     private boolean isVoted;
     private Long votedOptionId;
+    private boolean hasReacted;
+    private ReactionType reactionType;
     private int likes;
     private int dislikes;
 
@@ -60,6 +63,22 @@ public class PollDTO {
 
     public void setVotedOptionId(Long votedOptionId) {
         this.votedOptionId = votedOptionId;
+    }
+
+    public boolean getHasReacted() {
+        return hasReacted;
+    }
+
+    public void setHasReacted(boolean hasReacted) {
+        this.hasReacted = hasReacted;
+    }
+
+    public ReactionType getReactionType() {
+        return reactionType;
+    }
+
+    public void setReactionType(ReactionType reactionType) {
+        this.reactionType = reactionType;
     }
 
     public int getLikes() {

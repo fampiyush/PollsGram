@@ -167,6 +167,18 @@ public class PollService {
         }
         pollDTO.setId(poll.getId());
         pollDTO.setQuestion(poll.getQuestion());
+
+        User user = userService.getUserById(userId);
+        Reaction reaction = reactionsService.getReaction(user, poll);
+
+        if (reaction != null) {
+            pollDTO.setHasReacted(true);
+            pollDTO.setReactionType(reaction.getReactionType());
+        } else {
+            pollDTO.setHasReacted(false);
+            pollDTO.setReactionType(null);
+        }
+
         pollDTO.setLikes(poll.getLikes());
         pollDTO.setDislikes(poll.getDislikes());
         pollDTO.setOptions(poll.getOptions().stream()

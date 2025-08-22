@@ -18,7 +18,7 @@ public class ReactionsService {
     public void createReaction(User user, Poll poll, ReactionType reactionType) {
 
         //Check if the user has already reacted to the poll
-        Reaction existingReaction = reactionsRepository.findByUserAndPoll(user, poll);
+        Reaction existingReaction = reactionsRepository.findByUserAndPoll(user, poll).orElse(null);
         if (existingReaction != null) {
             // If the user has already reacted, update the reaction type
             existingReaction.setReactionType(reactionType);
@@ -35,11 +35,11 @@ public class ReactionsService {
     }
 
     public Reaction getReaction(User user, Poll poll) {
-        return reactionsRepository.findByUserAndPoll(user, poll);
+        return reactionsRepository.findByUserAndPoll(user, poll).orElse(null);
     }
 
     public void deleteReaction(User user, Poll poll) {
-        Reaction reaction = reactionsRepository.findByUserAndPoll(user, poll);
+        Reaction reaction = reactionsRepository.findByUserAndPoll(user, poll).orElse(null);
         if (reaction != null) {
             reactionsRepository.delete(reaction);
         }

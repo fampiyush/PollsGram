@@ -18,7 +18,6 @@ const PollsView = () => {
     const fetchPolls = async () => {
       try {
         const data = await getPollsByPage(page, user.id!);
-        console.log('Fetched polls:', data); //temp
         setPolls(data);
         setNoMorePolls(Object.keys(data).length < 5); // Update based on fetched data: true if less than 5 polls
       } catch (error) {
