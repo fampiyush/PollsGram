@@ -191,6 +191,18 @@ public class PollService {
     }
 
     @Transactional
+    public boolean reactToPoll(Long userId, Long pollId, ReactionType reactionType) {
+        if(reactionType == ReactionType.LIKE) {
+            return likePoll(pollId, userId);
+        } else if(reactionType == ReactionType.DISLIKE) {
+            return dislikePoll(pollId, userId);
+        } else {
+            System.out.println("Invalid reaction type: " + reactionType);
+            return false;
+        }
+    }
+
+    @Transactional
     public boolean likePoll(Long pollId, Long userId) {
         Poll poll = pollRepository.findById(pollId).orElse(null);
         if (poll == null) {
@@ -232,6 +244,38 @@ public class PollService {
             return true;
         } catch (Exception e) {
             System.out.println("Error disliking poll: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean removeReaction(Long userId, Long pollId) {
+        Poll poll = pollRepository.findById(pollId).orElse(null);
+        if (poll == null) {
+            return false;
+        }
+
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return false;
+        }
+
+        // Decrement likes or dislikes based on the reaction type
+        Reaction reaction = reactionsService.getReaction(user, poll);
+        if (reaction != null) {
+            if (reaction.getReactionType() == ReactionType.LIKE) {
+                poll.setLikes(poll.getLikes() - 1);
+            } else if (reaction.getReactionType() == ReactionType.DISLIKE) {
+                poll.setDislikes(poll.getDislikes() - 1);
+            }
+        }
+
+        try {
+            reactionsService.deleteReaction(user, poll);
+            pollRepository.save(poll);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error removing reaction: " + e.getMessage());
             return false;
         }
     }

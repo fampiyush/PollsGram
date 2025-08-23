@@ -1,5 +1,6 @@
 package com.example.pollsgram.controller;
 import com.example.pollsgram.dto.PollDTO;
+import com.example.pollsgram.model.ReactionType;
 import com.example.pollsgram.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,6 +63,20 @@ public class PollController {
         }
     }
 
+    @PostMapping("/react")
+    public ResponseEntity<Map<String, String>> reactToPoll(@RequestBody Map<String, String> reactionData) {
+        boolean isReacted = pollService.reactToPoll(
+                Long.parseLong(reactionData.get("userId")),
+                Long.parseLong(reactionData.get("pollId")),
+                ReactionType.valueOf(reactionData.get("reactionType").toUpperCase())
+        );
+        if (isReacted) {
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Reaction recorded successfully."));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Failed to record reaction."));
+        }
+    }
+
     @PatchMapping("/update/question/{id}")
     public ResponseEntity<Map<String, String>> updatePoll(@PathVariable Long id, @RequestBody String question) {
         boolean isUpdated = pollService.updatePollQuestion(id, question);
@@ -79,6 +94,19 @@ public class PollController {
             return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Poll deleted successfully."));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Failed to delete poll."));
+        }
+    }
+
+    @DeleteMapping("/delete/react")
+    public ResponseEntity<Map<String, String>> deleteReaction(@RequestBody Map<String, Long> reactionData) {
+        boolean isDeleted = pollService.removeReaction(
+                reactionData.get("userId"),
+                reactionData.get("pollId")
+        );
+        if (isDeleted) {
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Reaction deleted successfully."));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Failed to delete reaction."));
         }
     }
 }
