@@ -12,6 +12,7 @@ const POST_OPTION = '/options/create';
 const POST_GOOGLE_AUTH = '/auth/google';
 const POST_LOGOUT = '/auth/logout';
 const POST_VOTE = '/polls/vote'; // required user id, poll id, and option id in body
+const POST_REACT = '/polls/react'; // required user id, poll id, and reaction type in body
 
 // PATCH
 const PATCH_POLL_QUESTION = '/polls/update/question/'; // required /pollsId
@@ -20,6 +21,7 @@ const PATCH_OPTION_TEXT = '/options/update/';
 // DELETE
 const DELETE_POLL = '/polls/delete/'; // required /pollId
 const DELETE_OPTION = '/options/delete/'; // required /optionId
+const DELETE_REACT = '/polls/delete/react/'; // required user id and poll id
 
 export let ACCESS_TOKEN: string | null = null;
 
@@ -194,6 +196,47 @@ export const votePoll = async (userId: number, pollId: number, optionId: number)
     }
 }
 
+export const reactToPoll = async (userId: number, pollId: number, reactionType: string) => {
+    const url = `${import.meta.env.VITE_BASE_API_URL}${POST_REACT}`;
+    try {
+        const requestData = {
+            userId,
+            pollId,
+            reactionType
+        };
+        const response = await axios.post(url, requestData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to react to poll: ${error.message}`);
+        }
+        throw new Error('Failed to react to poll: An unknown error occurred');
+    }
+}
+
+export const removeReactionFromPoll = async (userId: number, pollId: number) => {
+    const url = `${import.meta.env.VITE_BASE_API_URL}${DELETE_REACT}${userId}/${pollId}`;
+    try {
+        const response = await axios.delete(url, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to remove reaction from poll: ${error.message}`);
+        }
+        throw new Error('Failed to remove reaction from poll: An unknown error occurred');
+    }
+}
+
 export const updatePollQuestion = async (pollId: number, question: string) => {
     const url = `${import.meta.env.VITE_BASE_API_URL}${PATCH_POLL_QUESTION}${pollId}`;
     try {
@@ -282,6 +325,24 @@ export const deleteOption = async (optionId: number) => {
             throw new Error(`Failed to delete option: ${error.message}`);
         }
         throw new Error('Failed to delete option: An unknown error occurred');
+    }
+}
+
+export const deleteReaction = async (userId: number, pollId: number) => {
+    const url = `${import.meta.env.VITE_BASE_API_URL}${DELETE_REACT}${userId}/${pollId}`;
+    try {
+        const response = await axios.delete(url, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to delete reaction: ${error.message}`);
+        }
+        throw new Error('Failed to delete reaction: An unknown error occurred');
     }
 }
 
