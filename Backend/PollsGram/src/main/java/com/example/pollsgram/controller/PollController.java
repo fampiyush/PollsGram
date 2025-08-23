@@ -97,11 +97,11 @@ public class PollController {
         }
     }
 
-    @DeleteMapping("/delete/react")
-    public ResponseEntity<Map<String, String>> deleteReaction(@RequestBody Map<String, Long> reactionData) {
+    @DeleteMapping("/delete/react/{userid}/{pollid}")
+    public ResponseEntity<Map<String, String>> deleteReaction(@PathVariable Long userid, @PathVariable Long pollid) {
         boolean isDeleted = pollService.removeReaction(
-                reactionData.get("userId"),
-                reactionData.get("pollId")
+                userid,
+                pollid
         );
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Reaction deleted successfully."));
