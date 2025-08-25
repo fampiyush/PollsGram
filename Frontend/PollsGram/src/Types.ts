@@ -5,6 +5,8 @@ export type Poll = {
   options: Option[];
   voted: boolean;
   votedOptionId: number | null;
+  hasReacted: boolean;
+  reactionType: 'LIKE' | 'DISLIKE' | null;
 }
 
 export type Option = {

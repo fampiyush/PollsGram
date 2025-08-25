@@ -481,7 +481,7 @@ body {
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
 }
 
-.likeUnlikeContainer .unlikeButton.active {
+.likeUnlikeContainer .dislikeButton.active {
   background: linear-gradient(135deg, #f44336 0%, #ef6a8e 100%);
   color: #ffffff;
   border-color: transparent;

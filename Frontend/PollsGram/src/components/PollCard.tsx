@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import type { Poll, Option } from '../Types';
-import { votePoll } from '../Service/Api';
+import { votePoll, reactToPoll, deleteReaction } from '../Service/Api';
 import PollsContext from '../Service/PollsContext.tsx';
 import { toast } from 'react-toastify';
 import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "react-icons/ai";
@@ -8,13 +8,15 @@ import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "reac
 const PollCard = (initialPoll: Poll) => {
   const [currentPoll, setCurrentPoll] = useState<Poll>(initialPoll);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
-  const [reaction, setReaction] = useState<'like' | 'unlike' | null>(null); // UI-only reaction state
+  const [reaction, setReaction] = useState<'LIKE' | 'DISLIKE' | null>(null); // UI-only reaction state
   const { user } = useContext(PollsContext);
 
   useEffect(() => {
     setCurrentPoll(initialPoll);
     setSelectedOption(null);
-    setReaction(null); // reset reaction when poll changes
+    if (initialPoll.hasReacted) {
+      setReaction(initialPoll.reactionType);
+    }
   }, [initialPoll]);
 
   const handleOptionSelect = (option: Option) => {
@@ -57,6 +59,32 @@ const PollCard = (initialPoll: Poll) => {
 
   const handleCancelVote = () => {
     setSelectedOption(null);
+  };
+
+  const onReactionChange = (newReaction: 'LIKE' | 'DISLIKE' | null) => {
+    if (user.id && currentPoll.id) {
+      if (newReaction) {
+        reactToPoll(user.id, currentPoll.id, newReaction)
+          .then(() => {
+            toast.success(`Successfully ${newReaction === 'LIKE' ? 'liked' : 'disliked'} the poll!`);
+            setReaction(newReaction);
+          })
+          .catch((error) => {
+            console.error('Error reacting to poll:', error);
+            toast.error('Failed to react to the poll. Please try again.');
+          });
+      } else {
+        deleteReaction(user.id, currentPoll.id)
+          .then(() => {
+            toast.success('Successfully removed your reaction from the poll!');
+            setReaction(null);
+          })
+          .catch((error) => {
+            console.error('Error removing reaction from poll:', error);
+            toast.error('Failed to remove your reaction from the poll. Please try again.');
+          });
+      }
+    }
   };
 
   return (
@@ -112,22 +140,22 @@ const PollCard = (initialPoll: Poll) => {
         )}
         <div className='likeUnlikeContainer'>
           <button
-            className={`likeButton ${reaction === 'like' ? 'active' : ''}`}
-            onClick={() => setReaction(prev => (prev === 'like' ? null : 'like'))}
-            aria-pressed={reaction === 'like'}
-            title={reaction === 'like' ? 'Remove like' : 'Like'}
+            className={`likeButton ${reaction === 'LIKE' ? 'active' : ''}`}
+            onClick={() => onReactionChange(reaction === 'LIKE' ? null : 'LIKE')}
+            aria-pressed={reaction === 'LIKE'}
+            title={reaction === 'LIKE' ? 'Remove like' : 'Like'}
             type="button"
           >
-            {reaction === 'like' ? <AiFillLike /> : <AiOutlineLike />}
+            {reaction === 'LIKE' ? <AiFillLike /> : <AiOutlineLike />}
           </button>
           <button
-            className={`unlikeButton ${reaction === 'unlike' ? 'active' : ''}`}
-            onClick={() => setReaction(prev => (prev === 'unlike' ? null : 'unlike'))}
-            aria-pressed={reaction === 'unlike'}
-            title={reaction === 'unlike' ? 'Remove dislike' : 'Dislike'}
+            className={`dislikeButton ${reaction === 'DISLIKE' ? 'active' : ''}`}
+            onClick={() => onReactionChange(reaction === 'DISLIKE' ? null : 'DISLIKE')}
+            aria-pressed={reaction === 'DISLIKE'}
+            title={reaction === 'DISLIKE' ? 'Remove dislike' : 'Dislike'}
             type="button"
           >
-            {reaction === 'unlike' ? <AiFillDislike /> : <AiOutlineDislike />}
+            {reaction === 'DISLIKE' ? <AiFillDislike /> : <AiOutlineDislike />}
           </button>
         </div>
       </div>
