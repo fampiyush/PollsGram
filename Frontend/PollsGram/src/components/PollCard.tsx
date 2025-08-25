@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import type { Poll, Option } from '../Types';
+import type { Poll, Option, ReactionType } from '../Types';
 import { votePoll, reactToPoll, deleteReaction } from '../Service/Api';
 import PollsContext from '../Service/PollsContext.tsx';
 import { toast } from 'react-toastify';
@@ -8,7 +8,7 @@ import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "reac
 const PollCard = (initialPoll: Poll) => {
   const [currentPoll, setCurrentPoll] = useState<Poll>(initialPoll);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
-  const [reaction, setReaction] = useState<'LIKE' | 'DISLIKE' | null>(null); // UI-only reaction state
+  const [reaction, setReaction] = useState<ReactionType>(null); // UI-only reaction state
   const { user } = useContext(PollsContext);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const PollCard = (initialPoll: Poll) => {
     setSelectedOption(null);
   };
 
-  const onReactionChange = (newReaction: 'LIKE' | 'DISLIKE' | null) => {
+  const onReactionChange = (newReaction: ReactionType) => {
     if (user.id && currentPoll.id) {
       if (newReaction) {
         reactToPoll(user.id, currentPoll.id, newReaction)
