@@ -21,6 +21,9 @@ public class Poll {
     @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL)
     private List<Option> options;
 
+    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL)
+    private List<Reaction> reactions;
+
     private int likes = 0;
     private int dislikes = 0;
 
@@ -57,6 +60,24 @@ public class Poll {
     }
     public void setCreator(User creator) {
         this.creator = creator;
+    }
+
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(List<Reaction> reactions) {
+        this.reactions = reactions;
+    }
+
+    public void addReaction(Reaction reaction) {
+        reactions.add(reaction);
+        reaction.setPoll(this);
+    }
+
+    public void removeReaction(Reaction reaction) {
+        reactions.remove(reaction);
+        reaction.setPoll(null);
     }
 
     public int getLikes() {

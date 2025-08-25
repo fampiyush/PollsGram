@@ -12,7 +12,7 @@ public class Reaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "poll_id", nullable = false)
     private Poll poll;
 

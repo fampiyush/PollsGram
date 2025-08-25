@@ -264,9 +264,9 @@ public class PollService {
         Reaction reaction = reactionsService.getReaction(user, poll);
         if (reaction != null) {
             if (reaction.getReactionType() == ReactionType.LIKE) {
-                poll.setLikes(poll.getLikes() - 1);
+                poll.setLikes(Math.max(0, poll.getLikes() - 1));
             } else if (reaction.getReactionType() == ReactionType.DISLIKE) {
-                poll.setDislikes(poll.getDislikes() - 1);
+                poll.setDislikes(Math.max(0, poll.getDislikes() - 1));
             }
         }
 

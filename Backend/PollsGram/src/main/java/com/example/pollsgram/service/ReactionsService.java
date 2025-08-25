@@ -5,6 +5,7 @@ import com.example.pollsgram.model.ReactionType;
 import com.example.pollsgram.model.Reaction;
 import com.example.pollsgram.model.User;
 import com.example.pollsgram.repository.ReactionsRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +24,11 @@ public class ReactionsService {
             // If the user has already reacted, update the reaction type
             existingReaction.setReactionType(reactionType);
             reactionsRepository.save(existingReaction);
+            if(reactionType == ReactionType.LIKE) {
+                poll.setDislikes(Math.max(0, poll.getDislikes() - 1));
+            }else {
+                poll.setLikes(Math.max(0, poll.getLikes() - 1));
+            }
             return;
         }
 
@@ -31,16 +37,19 @@ public class ReactionsService {
         reaction.setPoll(poll);
         reaction.setReactionType(reactionType);
 
-        reactionsRepository.save(reaction);
+        Reaction re = reactionsRepository.save(reaction);
+        poll.addReaction(re);
     }
 
     public Reaction getReaction(User user, Poll poll) {
         return reactionsRepository.findByUserAndPoll(user, poll).orElse(null);
     }
 
+    @Transactional
     public void deleteReaction(User user, Poll poll) {
         Reaction reaction = reactionsRepository.findByUserAndPoll(user, poll).orElse(null);
         if (reaction != null) {
+            poll.removeReaction(reaction);
             reactionsRepository.delete(reaction);
         }
     }
