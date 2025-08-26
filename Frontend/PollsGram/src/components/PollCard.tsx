@@ -132,7 +132,7 @@ const PollCard = (initialPoll: Poll) => {
                 }`}
               >
                 <span>{option.optionText}</span>
-                <span>{option.votesCount} votes</span>
+                <span>{option.votesCount} {option.votesCount === 1 ? 'vote' : 'votes'}</span>
               </div>
             ))
           ) : (

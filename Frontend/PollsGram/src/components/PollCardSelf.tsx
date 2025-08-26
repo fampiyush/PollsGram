@@ -80,7 +80,7 @@ const PollCardSelf = ({ initialPoll, onDelete }: { initialPoll: Poll, onDelete: 
                             className="poll-card-option"
                         >
                             <span>{option.optionText}</span>
-                            <span>{option.votesCount} votes</span>
+                            <span>{option.votesCount} {option.votesCount === 1 ? 'vote' : 'votes'}</span>
                         </div>
                     ))}
                 </div>
