@@ -7,6 +7,8 @@ export type Poll = {
   votedOptionId: number | null;
   hasReacted: boolean;
   reactionType: ReactionType;
+  likes: number;
+  dislikes: number;
 }
 
 export type ReactionType = 'LIKE' | 'DISLIKE' | null;

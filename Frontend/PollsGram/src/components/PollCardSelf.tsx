@@ -93,7 +93,7 @@ const PollCardSelf = ({ initialPoll, onDelete }: { initialPoll: Poll, onDelete: 
                             >
                                     <AiFillLike />
                             </button>
-                            <span className="reaction-count like-count">0</span>
+                            <span className="reaction-count like-count">{currentPoll.likes}</span>
                     </div>
                     <div className="reaction-group">
                             <button
@@ -103,7 +103,7 @@ const PollCardSelf = ({ initialPoll, onDelete }: { initialPoll: Poll, onDelete: 
                             >
                                     <AiFillDislike />
                             </button>
-                            <span className="reaction-count unlike-count">0</span>
+                            <span className="reaction-count unlike-count">{currentPoll.dislikes}</span>
                     </div>
                 </div>
             </div>
